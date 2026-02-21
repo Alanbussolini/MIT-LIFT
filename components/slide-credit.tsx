@@ -1,0 +1,361 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts'
+import type {
+  BusinessImpactData,
+  CreditSourceData,
+  FormalInformalData,
+  BarrierData,
+} from '@/lib/csv-parser'
+
+interface SlideCreditProps {
+  creditImpactPct: number
+  formalInformalRatio: string
+  mainBarrier: string
+  businessImpactData: BusinessImpactData[]
+  creditSources: CreditSourceData[]
+  formalInformalChartData: FormalInformalData[]
+  barriers: BarrierData[]
+  onBack: () => void
+}
+
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+}
+
+const IMPACT_COLORS: Record<string, string> = {
+  nada: '#d1d5db',
+  poco: '#93c5fd',
+  algo: '#60a5fa',
+  moderado: '#2563eb',
+  mucho: '#1e3a5f',
+}
+
+const DONUT_COLORS = ['#1a3a5c', '#4ECDC4']
+
+export function SlideCredit({
+  creditImpactPct,
+  formalInformalRatio,
+  mainBarrier,
+  businessImpactData,
+  creditSources,
+  formalInformalChartData,
+  barriers,
+  onBack,
+}: SlideCreditProps) {
+  return (
+    <section className="relative min-h-screen w-full bg-background dot-grid-bg">
+      {/* Back button */}
+      <div className="fixed left-4 top-4 z-50">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onBack}
+          className="gap-2 border-border bg-card/95 shadow-md backdrop-blur-sm text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Roadmap
+        </Button>
+      </div>
+
+      <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pt-20 pb-8">
+        {/* Header */}
+        <motion.div className="mb-8 text-center" {...fadeUp} transition={{ duration: 0.5 }}>
+          <span className="mb-3 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
+            05 - Credit
+          </span>
+          <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {'Access to '}
+            <span className="text-primary">Credit</span>
+          </h2>
+        </motion.div>
+
+        {/* Angry Numbers Summary */}
+        <motion.div
+          className="mb-10 flex flex-col gap-4 sm:flex-row"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/20 bg-card p-6 shadow-sm">
+            <span className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
+              {creditImpactPct}%
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Credit Impact
+            </span>
+            <span className="text-center text-[10px] text-muted-foreground/70">
+              {'Answered Mucho or Moderado'}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
+            <span className="text-4xl font-black tracking-tight text-accent sm:text-5xl">
+              {formalInformalRatio}
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Formal vs. Informal
+            </span>
+            <span className="text-center text-[10px] text-muted-foreground/70">
+              {'Banking vs Family/Private'}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
+            <span className="text-balance text-center text-lg font-black leading-snug tracking-tight text-foreground sm:text-xl">
+              {mainBarrier.length > 40 ? mainBarrier.slice(0, 40) + '...' : mainBarrier}
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Main Barrier
+            </span>
+            <span className="text-center text-[10px] text-muted-foreground/70">
+              {'Most frequent reason'}
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Charts Grid - 2x2 */}
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
+          {/* Chart 1: Business Impact Comparison (Grouped Bar) */}
+          <motion.div
+            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            {...fadeUp}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <h3 className="mb-1 text-sm font-bold text-card-foreground">
+              Business Impact Comparison
+            </h3>
+            <p className="mb-4 text-[11px] text-muted-foreground">
+              {'Distribution of impact scale across key variables'}
+            </p>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart
+                data={businessImpactData}
+                margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="variable"
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: '#6b7280' }}
+                  label={{
+                    value: 'Responses',
+                    angle: -90,
+                    position: 'insideLeft',
+                    style: { fontSize: 10, fill: '#9ca3af' },
+                  }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 8,
+                    border: '1px solid #e5e7eb',
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: 10 }} />
+                <Bar dataKey="nada" fill={IMPACT_COLORS.nada} name="Nada" stackId="impact" />
+                <Bar dataKey="poco" fill={IMPACT_COLORS.poco} name="Poco" stackId="impact" />
+                <Bar dataKey="algo" fill={IMPACT_COLORS.algo} name="Algo" stackId="impact" />
+                <Bar dataKey="moderado" fill={IMPACT_COLORS.moderado} name="Moderado" stackId="impact" />
+                <Bar dataKey="mucho" fill={IMPACT_COLORS.mucho} name="Mucho" stackId="impact" radius={[3, 3, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Chart 2: Credit Sources (Bar Chart) */}
+          <motion.div
+            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            {...fadeUp}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <h3 className="mb-1 text-sm font-bold text-card-foreground">
+              Credit Sources
+            </h3>
+            <p className="mb-4 text-[11px] text-muted-foreground">
+              {'Number of owners using each credit source'}
+            </p>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart
+                data={creditSources}
+                margin={{ top: 5, right: 10, left: 0, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis
+                  dataKey="source"
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                  label={{
+                    value: 'Source',
+                    position: 'insideBottom',
+                    offset: -10,
+                    style: { fontSize: 10, fill: '#9ca3af' },
+                  }}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: '#6b7280' }}
+                  label={{
+                    value: 'Owners',
+                    angle: -90,
+                    position: 'insideLeft',
+                    style: { fontSize: 10, fill: '#9ca3af' },
+                  }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 8,
+                    border: '1px solid #e5e7eb',
+                  }}
+                />
+                <Bar
+                  dataKey="count"
+                  fill="#1a3a5c"
+                  radius={[3, 3, 0, 0]}
+                  name="Owners"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Chart 3: Formal vs Informal Credit (Donut) */}
+          <motion.div
+            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            {...fadeUp}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <h3 className="mb-1 text-sm font-bold text-card-foreground">
+              Formal vs. Informal Credit
+            </h3>
+            <p className="mb-4 text-[11px] text-muted-foreground">
+              {'Formal (Banks, Suppliers, Govt) vs Informal (Family, Private)'}
+            </p>
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie
+                  data={formalInformalChartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={65}
+                  outerRadius={100}
+                  paddingAngle={3}
+                  dataKey="value"
+                  nameKey="name"
+                  stroke="none"
+                >
+                  {formalInformalChartData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 8,
+                    border: '1px solid #e5e7eb',
+                  }}
+                  formatter={(value: number, name: string) => [
+                    `${value} owners`,
+                    name,
+                  ]}
+                />
+                <Legend
+                  wrapperStyle={{ fontSize: 12 }}
+                  formatter={(value) => (
+                    <span style={{ color: '#6b7280' }}>{value}</span>
+                  )}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Chart 4: Barriers to Bank Credit (Horizontal Bar) */}
+          <motion.div
+            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            {...fadeUp}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            <h3 className="mb-1 text-sm font-bold text-card-foreground">
+              Barriers to Bank Credit
+            </h3>
+            <p className="mb-4 text-[11px] text-muted-foreground">
+              {'Primary reasons for not having bank credit'}
+            </p>
+            <ResponsiveContainer
+              width="100%"
+              height={Math.max(280, barriers.length * 36)}
+            >
+              <BarChart
+                data={barriers}
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
+                <XAxis
+                  type="number"
+                  tick={{ fontSize: 11, fill: '#6b7280' }}
+                  label={{
+                    value: 'Responses',
+                    position: 'insideBottom',
+                    offset: -2,
+                    style: { fontSize: 10, fill: '#9ca3af' },
+                  }}
+                />
+                <YAxis
+                  dataKey="reason"
+                  type="category"
+                  tick={{ fontSize: 9, fill: '#6b7280' }}
+                  width={160}
+                />
+                <Tooltip
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 8,
+                    border: '1px solid #e5e7eb',
+                  }}
+                />
+                <Bar
+                  dataKey="count"
+                  fill="#1a3a5c"
+                  radius={[0, 3, 3, 0]}
+                  name="Responses"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <SlideFooter page={6} />
+    </section>
+  )
+}
+
+function SlideFooter({ page }: { page: number }) {
+  return (
+    <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
+      <span className="opacity-70">liftlab.mit.edu</span>
+      <span className="opacity-70">Page {page}</span>
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-bold tracking-tight">MIT</span>
+        <div className="flex flex-col leading-none">
+          <span className="text-[10px] font-semibold opacity-80">Low Income Firms</span>
+          <span className="text-[10px] font-semibold opacity-80">Transformation Lab</span>
+        </div>
+      </div>
+    </div>
+  )
+}
