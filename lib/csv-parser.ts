@@ -506,6 +506,34 @@ export function computeMainBarrier(rows: SurveyRow[]): string {
   return barriers[0].reason
 }
 
+export interface DigitalLevelData {
+  level: string
+  count: number
+  percentage: number
+}
+
+export function computeDigitalLevelDistribution(rows: SurveyRow[]): DigitalLevelData[] {
+  const counts: Record<string, number> = {}
+  
+  rows.forEach(row => {
+    const level = row.digitalLevel
+    if (level && level !== '' && level !== '-') {
+      counts[level] = (counts[level] || 0) + 1
+    }
+  })
+  
+  const total = Object.values(counts).reduce((a, b) => a + b, 0)
+  if (total === 0) return []
+  
+  return Object.entries(counts)
+    .map(([level, count]) => ({
+      level,
+      count,
+      percentage: parseFloat(((count / total) * 100).toFixed(1)),
+    }))
+    .sort((a, b) => b.count - a.count)
+}
+
 export function computeSalaryDistribution(rows: SurveyRow[]): SalaryRangeData[] {
   const ranges = [
     { range: '< 1M', min: 0, max: 1000000 },
