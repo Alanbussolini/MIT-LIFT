@@ -43,7 +43,7 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        Alan Bussolini
+        Alan Bussolini · 2026
       </motion.p>
 
       {/* Decorative line */}
