@@ -10,6 +10,7 @@ import { SlideNanostore } from '@/components/slide-nanostore'
 import { SlideOwner } from '@/components/slide-owner'
 import { SlideValuation } from '@/components/slide-valuation'
 import { SlideCredit } from '@/components/slide-credit'
+import { SlideTechnology } from '@/components/slide-technology'
 import { parseCSV } from '@/lib/csv-parser'
 import {
   computeAgeGenderData,
@@ -30,11 +31,15 @@ import {
   computeCreditImpactPct,
   computeFormalInformalRatio,
   computeMainBarrier,
+  computeWantsGrowth,
+  computeNoGrowthReasons,
+  computeDigitalLevelDistribution,
+  computeDigitalTools,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
 
-type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit'
+type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology'
 
 export default function Home() {
   const [csvText, setCsvText] = useState<string | null>(null)
@@ -61,6 +66,10 @@ export default function Home() {
   const creditImpactPct = computeCreditImpactPct(rows)
   const formalInformalRatio = computeFormalInformalRatio(rows)
   const mainBarrier = computeMainBarrier(rows)
+  const wantsGrowth = computeWantsGrowth(rows)
+  const noGrowthReasons = computeNoGrowthReasons(rows)
+  const digitalLevelData = computeDigitalLevelDistribution(rows)
+  const digitalToolsData = computeDigitalTools(rows)
 
   const goBack = () => setActiveView(null)
 
@@ -141,6 +150,23 @@ export default function Home() {
             creditSources={creditSources}
             formalInformalChartData={formalInformalData.chartData}
             barriers={barriers}
+            onBack={goBack}
+          />
+        </motion.div>
+      ) : activeView === 'technology' ? (
+        <motion.div
+          key="technology"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.35 }}
+        >
+          <SlideTechnology
+            wantsGrowthData={wantsGrowth.chartData}
+            noGrowthReasons={noGrowthReasons}
+            digitalLevelData={digitalLevelData}
+            digitalToolsData={digitalToolsData}
+            yesPct={wantsGrowth.yesPct}
             onBack={goBack}
           />
         </motion.div>

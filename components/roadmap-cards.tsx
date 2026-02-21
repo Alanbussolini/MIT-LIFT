@@ -1,10 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Globe, Store, UserRound, DollarSign, Landmark, ArrowRight } from 'lucide-react'
+import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, ArrowRight } from 'lucide-react'
 
 interface RoadmapCardsProps {
-  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit') => void
+  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology') => void
   disabled: boolean
 }
 
@@ -63,6 +63,17 @@ const cards = [
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
     tags: ['Impact Analysis', 'Formal vs Informal', 'Bank Barriers'],
+  },
+  {
+    id: 'technology' as const,
+    number: '06',
+    title: 'Nivel de Adopción de Tecnología',
+    subtitle: 'Growth willingness, technology adoption levels and digital tools usage',
+    icon: Cpu,
+    color: 'text-accent',
+    bgColor: 'bg-accent/10',
+    borderHover: 'hover:border-accent/40',
+    tags: ['Growth Willingness', 'Digital Level', 'Tech Tools'],
   },
 ]
 

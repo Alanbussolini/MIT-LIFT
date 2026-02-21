@@ -534,6 +534,96 @@ export function computeDigitalLevelDistribution(rows: SurveyRow[]): DigitalLevel
     .sort((a, b) => b.count - a.count)
 }
 
+export interface WantsGrowthData {
+  name: string
+  value: number
+  percentage: number
+}
+
+export function computeWantsGrowth(rows: SurveyRow[]): {
+  yes: number
+  no: number
+  yesPct: number
+  noPct: number
+  chartData: WantsGrowthData[]
+} {
+  const yes = rows.filter(r => r.wantsGrowth === 'Sí').length
+  const no = rows.filter(r => r.wantsGrowth === 'No').length
+  const total = yes + no
+  const yesPct = total > 0 ? parseFloat(((yes / total) * 100).toFixed(1)) : 0
+  const noPct = total > 0 ? parseFloat(((no / total) * 100).toFixed(1)) : 0
+  
+  return {
+    yes,
+    no,
+    yesPct,
+    noPct,
+    chartData: [
+      { name: 'Quiere crecer', value: yes, percentage: yesPct },
+      { name: 'No quiere crecer', value: no, percentage: noPct },
+    ],
+  }
+}
+
+export interface NoGrowthReasonData {
+  reason: string
+  count: number
+  percentage: number
+}
+
+export function computeNoGrowthReasons(rows: SurveyRow[]): NoGrowthReasonData[] {
+  const counts: Record<string, number> = {}
+  
+  rows.forEach(row => {
+    const reason = row.noGrowthReason
+    if (reason && reason !== '' && reason !== '-' && reason !== 'No aplica') {
+      counts[reason] = (counts[reason] || 0) + 1
+    }
+  })
+  
+  const total = Object.values(counts).reduce((a, b) => a + b, 0)
+  if (total === 0) return []
+  
+  return Object.entries(counts)
+    .map(([reason, count]) => ({
+      reason,
+      count,
+      percentage: parseFloat(((count / total) * 100).toFixed(1)),
+    }))
+    .sort((a, b) => b.count - a.count)
+}
+
+export interface DigitalToolsData {
+  tool: string
+  count: number
+  percentage: number
+}
+
+export function computeDigitalTools(rows: SurveyRow[]): DigitalToolsData[] {
+  const counts: Record<string, number> = {}
+  
+  rows.forEach(row => {
+    const tools = row.digitalTools
+    if (tools && tools !== '' && tools !== '-') {
+      const toolList = tools.split(',').map(t => t.trim()).filter(t => t)
+      toolList.forEach(tool => {
+        counts[tool] = (counts[tool] || 0) + 1
+      })
+    }
+  })
+  
+  const total = rows.filter(r => r.digitalTools && r.digitalTools !== '' && r.digitalTools !== '-').length
+  if (total === 0) return []
+  
+  return Object.entries(counts)
+    .map(([tool, count]) => ({
+      tool,
+      count,
+      percentage: parseFloat(((count / total) * 100).toFixed(1)),
+    }))
+    .sort((a, b) => b.count - a.count)
+}
+
 export function computeSalaryDistribution(rows: SurveyRow[]): SalaryRangeData[] {
   const ranges = [
     { range: '< 1M', min: 0, max: 1000000 },
