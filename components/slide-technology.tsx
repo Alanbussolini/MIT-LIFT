@@ -39,6 +39,11 @@ const fadeUp = {
 
 const COLORS = ['#1a3a5c', '#ED7D31', '#4472C4', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47', '#9E480E']
 
+function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text
+  return text.substring(0, maxLength) + '...'
+}
+
 export function SlideTechnology({
   wantsGrowthData,
   noGrowthReasons,
@@ -49,7 +54,16 @@ export function SlideTechnology({
 }: SlideTechnologyProps) {
   const topDigitalLevel = digitalLevelData.length > 0 ? digitalLevelData[0] : null
   const topTool = digitalToolsData.length > 0 ? digitalToolsData[0] : null
-  const topNoGrowthReason = noGrowthReasons.length > 0 ? noGrowthReasons[0] : null
+
+  const noGrowthReasonsTruncated = noGrowthReasons.map(r => ({
+    ...r,
+    reasonShort: truncateText(r.reason, 25),
+  }))
+
+  const digitalToolsTruncated = digitalToolsData.map(t => ({
+    ...t,
+    toolShort: truncateText(t.tool, 20),
+  }))
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -123,18 +137,16 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               ¿Quiere que su negocio crezca?
             </h3>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={wantsGrowthData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={70}
+                  outerRadius={110}
                   paddingAngle={5}
                   dataKey="value"
-                  label={({ name, percentage }) => `${name}: ${percentage}%`}
-                  labelLine={false}
                 >
                   {wantsGrowthData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -142,9 +154,14 @@ export function SlideTechnology({
                 </Pie>
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
-                  formatter={(value: number, name: string) => [value, name]}
+                  formatter={(value: number, name: string, props: any) => [
+                    `${value} (${props.payload.percentage}%)`,
+                    name
+                  ]}
                 />
-                <Legend />
+                <Legend
+                  formatter={(value) => <span style={{ color: '#374151', fontSize: 13 }}>{value}</span>}
+                />
               </PieChart>
             </ResponsiveContainer>
           </motion.div>
@@ -157,20 +174,20 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Razones para no querer crecer
             </h3>
-            {noGrowthReasons.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
+            {noGrowthReasonsTruncated.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart
-                  data={noGrowthReasons.slice(0, 6)}
+                  data={noGrowthReasonsTruncated.slice(0, 5)}
                   layout="vertical"
-                  margin={{ top: 0, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 5, right: 40, left: 10, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 10, fill: '#6b7280' }} />
+                  <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} />
                   <YAxis
-                    dataKey="reason"
+                    dataKey="reasonShort"
                     type="category"
-                    tick={{ fontSize: 9, fill: '#6b7280' }}
-                    width={150}
+                    tick={{ fontSize: 11, fill: '#374151' }}
+                    width={180}
                   />
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
@@ -178,12 +195,13 @@ export function SlideTechnology({
                       `${value} (${props.payload.percentage}%)`,
                       'Cantidad'
                     ]}
+                    labelFormatter={(label: string, props: any) => props.payload.reason}
                   />
-                  <Bar dataKey="count" fill="#1a3a5c" radius={[0, 3, 3, 0]} />
+                  <Bar dataKey="count" fill="#1a3a5c" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground">
                 No hay datos disponibles
               </div>
             )}
@@ -198,20 +216,20 @@ export function SlideTechnology({
               Nivel de Tecnología
             </h3>
             {digitalLevelData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={digitalLevelData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis
                     dataKey="level"
-                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    tick={{ fontSize: 11, fill: '#374151' }}
                     angle={-45}
                     textAnchor="end"
-                    height={80}
+                    height={100}
                   />
-                  <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} />
+                  <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} />
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
@@ -227,7 +245,7 @@ export function SlideTechnology({
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground">
                 No hay datos disponibles
               </div>
             )}
@@ -241,20 +259,20 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Tecnologías más utilizadas
             </h3>
-            {digitalToolsData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
+            {digitalToolsTruncated.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart
-                  data={digitalToolsData.slice(0, 8)}
+                  data={digitalToolsTruncated.slice(0, 6)}
                   layout="vertical"
-                  margin={{ top: 0, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 5, right: 40, left: 10, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 10, fill: '#6b7280' }} />
+                  <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} />
                   <YAxis
-                    dataKey="tool"
+                    dataKey="toolShort"
                     type="category"
-                    tick={{ fontSize: 10, fill: '#6b7280' }}
-                    width={120}
+                    tick={{ fontSize: 11, fill: '#374151' }}
+                    width={150}
                   />
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
@@ -262,12 +280,13 @@ export function SlideTechnology({
                       `${value} (${props.payload.percentage}%)`,
                       'Cantidad'
                     ]}
+                    labelFormatter={(label: string, props: any) => props.payload.tool}
                   />
-                  <Bar dataKey="count" fill="#ED7D31" radius={[0, 3, 3, 0]} />
+                  <Bar dataKey="count" fill="#ED7D31" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground">
                 No hay datos disponibles
               </div>
             )}
