@@ -12,6 +12,7 @@ import { SlideValuation } from '@/components/slide-valuation'
 import { SlideCredit } from '@/components/slide-credit'
 import { SlideTechnology } from '@/components/slide-technology'
 import { SlideRegression } from '@/components/slide-regression'
+import { SlideSalaryRegression } from '@/components/slide-salary-regression'
 import { parseCSV } from '@/lib/csv-parser'
 import {
   computeAgeGenderData,
@@ -38,11 +39,12 @@ import {
   computeDigitalTools,
   computeCreditSalesExpectationRegression,
   computeTechnologySalesExpectationRegression,
+  computeTechnologySalaryRegression,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
 
-type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression'
+type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression'
 
 export default function Home() {
   const [csvText, setCsvText] = useState<string | null>(null)
@@ -75,6 +77,7 @@ export default function Home() {
   const digitalToolsData = computeDigitalTools(rows)
   const creditRegression = computeCreditSalesExpectationRegression(rows)
   const technologyRegression = computeTechnologySalesExpectationRegression(rows)
+  const salaryRegression = computeTechnologySalaryRegression(rows)
 
   const goBack = () => setActiveView(null)
 
@@ -186,6 +189,19 @@ export default function Home() {
           <SlideRegression
             creditRegression={creditRegression}
             technologyRegression={technologyRegression}
+            onBack={goBack}
+          />
+        </motion.div>
+      ) : activeView === 'salaryRegression' ? (
+        <motion.div
+          key="salaryRegression"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.35 }}
+        >
+          <SlideSalaryRegression
+            salaryRegression={salaryRegression}
             onBack={goBack}
           />
         </motion.div>

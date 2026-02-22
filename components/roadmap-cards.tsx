@@ -1,10 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, LineChart, ArrowRight } from 'lucide-react'
+import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, LineChart, TrendingUp, ArrowRight } from 'lucide-react'
 
 interface RoadmapCardsProps {
-  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression') => void
+  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression') => void
   disabled: boolean
 }
 
@@ -85,6 +85,17 @@ const cards = [
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
     tags: ['P-value', 'R²', 'Statistical Significance'],
+  },
+  {
+    id: 'salaryRegression' as const,
+    number: '08',
+    title: 'Sueldo Pretendido vs Tecnología',
+    subtitle: 'Regression analysis: Does technology level influence expected salary?',
+    icon: TrendingUp,
+    color: 'text-accent',
+    bgColor: 'bg-accent/10',
+    borderHover: 'hover:border-accent/40',
+    tags: ['Salary Analysis', 'Technology Level', 'OLS Regression'],
   },
 ]
 
