@@ -25,7 +25,8 @@ import type {
 
 interface SlideCreditProps {
   creditImpactPct: number
-  formalInformalRatio: string
+  formalPct: number
+  informalPct: number
   mainBarrier: string
   businessImpactData: BusinessImpactData[]
   creditSources: CreditSourceData[]
@@ -51,7 +52,8 @@ const DONUT_COLORS = ['#1a3a5c', '#4ECDC4']
 
 export function SlideCredit({
   creditImpactPct,
-  formalInformalRatio,
+  formalPct,
+  informalPct,
   mainBarrier,
   businessImpactData,
   creditSources,
@@ -59,6 +61,25 @@ export function SlideCredit({
   barriers,
   onBack,
 }: SlideCreditProps) {
+  
+  const priceCompetitionImpact = businessImpactData.filter(
+    d => d.variable === 'Price Increases' || d.variable === 'Competition'
+  )
+  const lackOfCreditImpact = businessImpactData.find(d => d.variable === 'Lack of Credit')
+  
+  const priceCompetitionAvg = priceCompetitionImpact.reduce((sum, d) => {
+    const total = d.nada + d.poco + d.algo + d.moderado + d.mucho
+    const weighted = d.nada * 0 + d.poco * 1 + d.algo * 2 + d.moderado * 3 + d.mucho * 4
+    return sum + (total > 0 ? weighted / total : 0)
+  }, 0) / priceCompetitionImpact.length
+  
+  const lackOfCreditTotal = lackOfCreditImpact 
+    ? lackOfCreditImpact.nada + lackOfCreditImpact.poco + lackOfCreditImpact.algo + lackOfCreditImpact.moderado + lackOfCreditImpact.mucho 
+    : 0
+  const lackOfCreditAvg = lackOfCreditImpact && lackOfCreditTotal > 0
+    ? (lackOfCreditImpact.nada * 0 + lackOfCreditImpact.poco * 1 + lackOfCreditImpact.algo * 2 + lackOfCreditImpact.moderado * 3 + lackOfCreditImpact.mucho * 4) / lackOfCreditTotal
+    : 0
+  
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
       {/* Back button */}
@@ -104,14 +125,17 @@ export function SlideCredit({
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
-            <span className="text-4xl font-black tracking-tight text-accent sm:text-5xl">
-              {formalInformalRatio}
-            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-black tracking-tight text-accent sm:text-4xl">
+                {formalPct.toFixed(0)}%
+              </span>
+              <span className="text-lg text-muted-foreground">/</span>
+              <span className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
+                {informalPct.toFixed(0)}%
+              </span>
+            </div>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Formal vs. Informal
-            </span>
-            <span className="text-center text-[10px] text-muted-foreground/70">
-              {'Banking vs Family/Private'}
+              Formal / Informal
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
@@ -123,6 +147,17 @@ export function SlideCredit({
             </span>
             <span className="text-center text-[10px] text-muted-foreground/70">
               {'Most frequent reason'}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-destructive/20 bg-card p-6 shadow-sm">
+            <span className="text-4xl font-black tracking-tight text-destructive sm:text-5xl">
+              {priceCompetitionAvg > lackOfCreditAvg ? 'Higher' : 'Lower'}
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Price & Competition Impact
+            </span>
+            <span className="text-center text-[10px] text-muted-foreground/70">
+              vs. Lack of Credit
             </span>
           </div>
         </motion.div>
@@ -243,7 +278,7 @@ export function SlideCredit({
             <p className="mb-4 text-[11px] text-muted-foreground">
               {'Formal (Banks, Suppliers, Govt) vs Informal (Family, Private)'}
             </p>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie
                   data={formalInformalChartData}
@@ -255,6 +290,8 @@ export function SlideCredit({
                   dataKey="value"
                   nameKey="name"
                   stroke="none"
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                  labelLine={false}
                 >
                   {formalInformalChartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
@@ -266,16 +303,10 @@ export function SlideCredit({
                     borderRadius: 8,
                     border: '1px solid #e5e7eb',
                   }}
-                  formatter={(value: number, name: string) => [
-                    `${value} owners`,
+                  formatter={(value: number, name: string, props: any) => [
+                    `${(props.payload.percent * 100).toFixed(1)}%`,
                     name,
                   ]}
-                />
-                <Legend
-                  wrapperStyle={{ fontSize: 12 }}
-                  formatter={(value) => (
-                    <span style={{ color: '#6b7280' }}>{value}</span>
-                  )}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -347,8 +378,10 @@ export function SlideCredit({
 function SlideFooter({ page }: { page: number }) {
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card 0{page - 1}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">

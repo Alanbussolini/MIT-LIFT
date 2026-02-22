@@ -31,7 +31,6 @@ import {
   computeFormalInformalCredit,
   computeBankCreditBarriers,
   computeCreditImpactPct,
-  computeFormalInformalRatio,
   computeMainBarrier,
   computeWantsGrowth,
   computeNoGrowthReasons,
@@ -40,6 +39,7 @@ import {
   computeCreditSalesExpectationRegression,
   computeTechnologySalesExpectationRegression,
   computeTechnologySalaryRegression,
+  computeMostFrequentBusinessType,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
@@ -69,7 +69,6 @@ export default function Home() {
   const formalInformalData = computeFormalInformalCredit(rows)
   const barriers = computeBankCreditBarriers(rows)
   const creditImpactPct = computeCreditImpactPct(rows)
-  const formalInformalRatio = computeFormalInformalRatio(rows)
   const mainBarrier = computeMainBarrier(rows)
   const wantsGrowth = computeWantsGrowth(rows)
   const noGrowthReasons = computeNoGrowthReasons(rows)
@@ -78,6 +77,7 @@ export default function Home() {
   const creditRegression = computeCreditSalesExpectationRegression(rows)
   const technologyRegression = computeTechnologySalesExpectationRegression(rows)
   const salaryRegression = computeTechnologySalaryRegression(rows)
+  const mostFrequentBusinessType = computeMostFrequentBusinessType(rows)
 
   const goBack = () => setActiveView(null)
 
@@ -107,6 +107,7 @@ export default function Home() {
             businessTypeData={businessTypeData}
             averageEmployees={averageEmployees}
             averageBusinessAge={averageBusinessAge}
+            mostFrequentBusinessType={mostFrequentBusinessType}
             onBack={goBack}
           />
         </motion.div>
@@ -152,7 +153,8 @@ export default function Home() {
         >
           <SlideCredit
             creditImpactPct={creditImpactPct}
-            formalInformalRatio={formalInformalRatio}
+            formalPct={formalInformalData.formalPct}
+            informalPct={formalInformalData.informalPct}
             mainBarrier={mainBarrier}
             businessImpactData={businessImpactData}
             creditSources={creditSources}

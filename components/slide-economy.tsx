@@ -69,6 +69,16 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
               {'of the workforce employed'}
             </span>
           </motion.div>
+          <motion.div
+            className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-8 shadow-sm"
+            {...fadeUp}
+            transition={{ duration: 0.5, delay: 0.25 }}
+          >
+            <span className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">Nanostores</span>
+            <span className="mt-2 text-center text-sm font-medium text-muted-foreground">
+              {'One key form of SMEs'}
+            </span>
+          </motion.div>
         </div>
 
         {/* Defining Characteristics */}
@@ -165,8 +175,10 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
 function SlideFooter({ page }: { page: number }) {
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card 0{page - 1}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">

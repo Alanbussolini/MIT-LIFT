@@ -217,12 +217,16 @@ export function computeGenderPercentage(rows: SurveyRow[]): GenderPercentage[] {
 }
 
 export function computeEducationData(rows: SurveyRow[]): EducationData[] {
-  const order = ['Universidad y más', 'Secundaria', 'Primaria', 'Preparatoria', 'Sin estudios']
+  const order = ['Universidad y más', 'Secundaria', 'Primaria', 'Sin estudios']
   const counts: Record<string, number> = {}
   order.forEach(o => { counts[o] = 0 })
   
   rows.forEach(row => {
-    if (counts[row.educationLevel] !== undefined) counts[row.educationLevel]++
+    let level = row.educationLevel
+    if (level === 'Preparatoria') {
+      level = 'Secundaria'
+    }
+    if (counts[level] !== undefined) counts[level]++
   })
   
   const total = Object.values(counts).reduce((a, b) => a + b, 0)
@@ -232,6 +236,35 @@ export function computeEducationData(rows: SurveyRow[]): EducationData[] {
     level,
     percentage: parseFloat(((counts[level] / total) * 100).toFixed(2)),
   }))
+}
+
+export interface MostFrequentBusinessType {
+  type: string
+  count: number
+  percentage: number
+}
+
+export function computeMostFrequentBusinessType(rows: SurveyRow[]): MostFrequentBusinessType | null {
+  const counts: Record<string, number> = {}
+  
+  rows.forEach(row => {
+    const type = row.businessType
+    if (type && type !== '') {
+      counts[type] = (counts[type] || 0) + 1
+    }
+  })
+  
+  const entries = Object.entries(counts)
+  if (entries.length === 0) return null
+  
+  const total = entries.reduce((sum, [, count]) => sum + count, 0)
+  const [topType, topCount] = entries.reduce((a, b) => a[1] > b[1] ? a : b)
+  
+  return {
+    type: topType,
+    count: topCount,
+    percentage: parseFloat(((topCount / total) * 100).toFixed(1)),
+  }
 }
 
 export function computeEmployeeCountData(rows: SurveyRow[]): EmployeeCountData[] {

@@ -11,10 +11,11 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceLine,
   PieChart,
   Pie,
   Cell,
-  Legend,
+  Label,
 } from 'recharts'
 import type { WillingnessData, SalaryRangeData } from '@/lib/csv-parser'
 
@@ -35,6 +36,10 @@ const fadeUp = {
 const DONUT_COLORS = ['#1a3a5c', '#4ECDC4']
 
 function formatCurrency(value: number): string {
+  return value.toLocaleString('es-AR')
+}
+
+function formatCurrencyShort(value: number): string {
   if (value >= 1000000) {
     return `$${(value / 1000000).toFixed(1)}M`
   }
@@ -102,8 +107,8 @@ export function SlideValuation({
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
-            <span className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">
-              {formatCurrency(avgSalary)}
+            <span className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
+              ${avgSalary.toLocaleString('es-AR')}
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
               {'Avg. Monthly Salary (ARS)'}
@@ -180,10 +185,22 @@ export function SlideValuation({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3 className="mb-4 text-sm font-bold text-card-foreground">
-              {'Willingness to Exit for a Fixed Salary'}
-            </h3>
-            <ResponsiveContainer width="100%" height={280}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-card-foreground">
+                {'Willingness to Exit for a Fixed Salary'}
+              </h3>
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#1a3a5c' }} />
+                  <span className="text-muted-foreground">Willing</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#4ECDC4' }} />
+                  <span className="text-muted-foreground">Not Willing</span>
+                </div>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Pie
                   data={willingnessChartData}
@@ -195,6 +212,8 @@ export function SlideValuation({
                   dataKey="value"
                   nameKey="name"
                   stroke="none"
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                  labelLine={false}
                 >
                   {willingnessChartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
@@ -206,16 +225,10 @@ export function SlideValuation({
                     borderRadius: 8,
                     border: '1px solid #e5e7eb',
                   }}
-                  formatter={(value: number, name: string) => [
-                    `${value} owners`,
+                  formatter={(value: number, name: string, props: any) => [
+                    `${(props.payload.percent * 100).toFixed(1)}%`,
                     name,
                   ]}
-                />
-                <Legend
-                  wrapperStyle={{ fontSize: 12 }}
-                  formatter={(value) => (
-                    <span style={{ color: '#6b7280' }}>{value}</span>
-                  )}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -230,10 +243,10 @@ export function SlideValuation({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               {'Monthly Salary Expectations Distribution'}
             </h3>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={260}>
               <BarChart
                 data={salaryDistribution}
-                margin={{ top: 5, right: 10, left: 0, bottom: 20 }}
+                margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
@@ -262,6 +275,16 @@ export function SlideValuation({
                     border: '1px solid #e5e7eb',
                   }}
                 />
+                <ReferenceLine
+                  y={salaryDistribution.length > 0 ? salaryDistribution.reduce((max, d) => d.count > max.count ? d : max, salaryDistribution[0]).count * 0.7 : 0}
+                  stroke="#ED7D31"
+                  strokeDasharray="5 5"
+                  label={{
+                    value: 'Avg',
+                    position: 'right',
+                    style: { fontSize: 10, fill: '#ED7D31' },
+                  }}
+                />
                 <Bar
                   dataKey="count"
                   fill="#1a3a5c"
@@ -283,8 +306,10 @@ export function SlideValuation({
 function SlideFooter({ page }: { page: number }) {
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card 0{page - 1}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">

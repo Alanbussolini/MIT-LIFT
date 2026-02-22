@@ -18,6 +18,7 @@ import type {
   EmployeeCountData,
   BusinessAgeData,
   BusinessTypeRentalData,
+  MostFrequentBusinessType,
 } from '@/lib/csv-parser'
 
 interface SlideNanostoreProps {
@@ -26,6 +27,7 @@ interface SlideNanostoreProps {
   businessTypeData: BusinessTypeRentalData[]
   averageEmployees: number
   averageBusinessAge: number
+  mostFrequentBusinessType: MostFrequentBusinessType | null
   onBack: () => void
 }
 
@@ -40,14 +42,13 @@ export function SlideNanostore({
   businessTypeData,
   averageEmployees,
   averageBusinessAge,
+  mostFrequentBusinessType,
   onBack,
 }: SlideNanostoreProps) {
   // Compute rental percentages from data
   const totalBusinesses = businessTypeData.reduce((sum, d) => sum + d.propio + d.rentado, 0)
   const totalRentado = businessTypeData.reduce((sum, d) => sum + d.rentado, 0)
-  const totalPropio = businessTypeData.reduce((sum, d) => sum + d.propio, 0)
   const rentedPct = totalBusinesses > 0 ? ((totalRentado / totalBusinesses) * 100).toFixed(2) : '0'
-  const ownedPct = totalBusinesses > 0 ? ((totalPropio / totalBusinesses) * 100).toFixed(2) : '0'
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -91,9 +92,9 @@ export function SlideNanostore({
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
             <span className="text-4xl font-black tracking-tight text-accent sm:text-5xl">
-              {ownedPct}%
+              ~{averageBusinessAge}
             </span>
-            <span className="mt-1 text-sm font-medium text-muted-foreground">Owned</span>
+            <span className="mt-1 text-sm font-medium text-muted-foreground">Years (Avg Age)</span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
             <span className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">
@@ -103,6 +104,16 @@ export function SlideNanostore({
               {'Employees (Avg)'}
             </span>
           </div>
+          {mostFrequentBusinessType && (
+            <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/30 bg-card p-6 shadow-sm">
+              <span className="text-2xl font-black tracking-tight text-primary sm:text-3xl text-center">
+                {mostFrequentBusinessType.type}
+              </span>
+              <span className="mt-1 text-sm font-medium text-muted-foreground">
+                {mostFrequentBusinessType.percentage}% of businesses
+              </span>
+            </div>
+          )}
         </motion.div>
 
         {/* Charts Grid */}
@@ -143,12 +154,12 @@ export function SlideNanostore({
                 />
                 <ReferenceLine
                   x={averageEmployees}
-                  stroke="#9ca3af"
+                  stroke="#ED7D31"
                   strokeDasharray="5 5"
                   label={{
                     value: 'Avg',
                     position: 'top',
-                    style: { fontSize: 10, fill: '#9ca3af' },
+                    style: { fontSize: 10, fill: '#ED7D31' },
                   }}
                 />
                 <Bar dataKey="quantity" fill="#1a3a5c" radius={[3, 3, 0, 0]} name="Count" />
@@ -162,11 +173,23 @@ export function SlideNanostore({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3 className="mb-4 text-sm font-bold text-card-foreground">
-              {'Business Age - Security Infrastructure (Rejas)'}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-card-foreground">
+                {'Business Age - Security Infrastructure (Rejas)'}
+              </h3>
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#1a3a5c' }} />
+                  <span className="text-muted-foreground">No Reja</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#4ECDC4' }} />
+                  <span className="text-muted-foreground">With Reja</span>
+                </div>
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={businessAgeData} margin={{ top: 5, right: 10, left: 0, bottom: 20 }}>
+              <BarChart data={businessAgeData} margin={{ top: 5, right: 10, left: 0, bottom: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
                   dataKey="age"
@@ -175,7 +198,7 @@ export function SlideNanostore({
                   label={{
                     value: 'Business age (years)',
                     position: 'insideBottom',
-                    offset: -10,
+                    offset: -15,
                     style: { fontSize: 10, fill: '#9ca3af' },
                   }}
                 />
@@ -191,23 +214,22 @@ export function SlideNanostore({
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                 />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
                 <ReferenceLine
                   x={averageBusinessAge}
-                  stroke="#9ca3af"
+                  stroke="#ED7D31"
                   strokeDasharray="5 5"
                   label={{
                     value: 'Avg',
                     position: 'top',
-                    style: { fontSize: 10, fill: '#9ca3af' },
+                    style: { fontSize: 10, fill: '#ED7D31' },
                   }}
                 />
-                <Bar dataKey="withoutGate" stackId="gate" fill="#1a3a5c" name="No" />
+                <Bar dataKey="withoutGate" stackId="gate" fill="#1a3a5c" name="No Reja" />
                 <Bar
                   dataKey="withGate"
                   stackId="gate"
                   fill="#4ECDC4"
-                  name="Yes"
+                  name="With Reja"
                   radius={[3, 3, 0, 0]}
                 />
               </BarChart>
@@ -280,8 +302,10 @@ export function SlideNanostore({
 function SlideFooter({ page }: { page: number }) {
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card 0{page - 1}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">

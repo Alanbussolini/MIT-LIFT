@@ -126,24 +126,39 @@ export function SlideOwner({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h3 className="mb-4 text-sm font-bold text-card-foreground">
-              {'Age and Gender Distribution'}
-            </h3>
-            <ResponsiveContainer width="100%" height={420}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-card-foreground">
+                {'Age and Gender Distribution'}
+              </h3>
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#1a3a5c' }} />
+                  <span className="text-muted-foreground">Male</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#ED7D31' }} />
+                  <span className="text-muted-foreground">Female</span>
+                </div>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={380}>
               <BarChart
-                data={ageGenderData}
-                margin={{ top: 5, right: 10, left: 0, bottom: 30 }}
+                data={ageGenderData.map(d => ({
+                  ...d,
+                  total: d.hombre + d.mujer,
+                  pct: ageGenderData.length > 0 
+                    ? ((d.hombre + d.mujer) / ageGenderData.reduce((sum, r) => sum + r.hombre + r.mujer, 0) * 100).toFixed(1)
+                    : '0'
+                }))}
+                margin={{ top: 20, right: 10, left: 0, bottom: 40 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
                   dataKey="ageRange"
-                  tick={{ fontSize: 11, fill: '#6b7280' }}
-                  label={{
-                    value: 'Age range',
-                    position: 'insideBottom',
-                    offset: -15,
-                    style: { fontSize: 10, fill: '#9ca3af' },
-                  }}
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
+                  angle={-30}
+                  textAnchor="end"
+                  height={60}
                 />
                 <YAxis
                   tick={{ fontSize: 11, fill: '#6b7280' }}
@@ -156,14 +171,10 @@ export function SlideOwner({
                 />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
-                />
-                <Legend
-                  wrapperStyle={{ fontSize: 11 }}
-                  formatter={(value) => (
-                    <span style={{ color: '#6b7280' }}>
-                      {value === 'hombre' ? 'Male' : 'Female'}
-                    </span>
-                  )}
+                  formatter={(value: number, name: string) => [
+                    value,
+                    name === 'hombre' ? 'Male' : 'Female'
+                  ]}
                 />
                 <Bar dataKey="mujer" stackId="gender" fill="#ED7D31" name="mujer" />
                 <Bar
@@ -172,6 +183,11 @@ export function SlideOwner({
                   fill="#1a3a5c"
                   name="hombre"
                   radius={[3, 3, 0, 0]}
+                  label={{ 
+                    position: 'top', 
+                    formatter: (value: number) => `${value}%`,
+                    style: { fontSize: 9, fill: '#6b7280' }
+                  }}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -215,12 +231,15 @@ export function SlideOwner({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <h3 className="mb-4 text-sm font-bold text-card-foreground">
+            <h3 className="mb-1 text-sm font-bold text-card-foreground">
               {'Education Level Achieved'}
             </h3>
-            <ResponsiveContainer width="100%" height={180}>
+            <p className="mb-3 text-[10px] text-muted-foreground">
+              Note: Preparatoria (US high school) is combined with Secundaria, as it equates to the final years of bachillerato in Argentina.
+            </p>
+            <ResponsiveContainer width="100%" height={160}>
               <BarChart
-                data={educationData}
+                data={[...educationData].reverse()}
                 layout="vertical"
                 margin={{ top: 0, right: 50, left: 10, bottom: 5 }}
               >
@@ -266,8 +285,10 @@ export function SlideOwner({
 function SlideFooter({ page }: { page: number }) {
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card 0{page - 1}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">
