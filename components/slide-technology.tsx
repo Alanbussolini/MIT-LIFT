@@ -39,7 +39,8 @@ const fadeUp = {
 
 const COLORS = ['#1a3a5c', '#ED7D31', '#4472C4', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47', '#9E480E']
 
-function truncateText(text: string, maxLength: number): string {
+function truncateText(text: string | undefined | null, maxLength: number): string {
+  if (!text) return ''
   if (text.length <= maxLength) return text
   return text.substring(0, maxLength) + '...'
 }
@@ -52,16 +53,23 @@ export function SlideTechnology({
   yesPct,
   onBack,
 }: SlideTechnologyProps) {
-  const topDigitalLevel = digitalLevelData.length > 0 ? digitalLevelData[0] : null
-  const topTool = digitalToolsData.length > 0 ? digitalToolsData[0] : null
+  const safeWantsGrowthData = wantsGrowthData || []
+  const safeNoGrowthReasons = noGrowthReasons || []
+  const safeDigitalLevelData = digitalLevelData || []
+  const safeDigitalToolsData = digitalToolsData || []
+  
+  const topDigitalLevel = safeDigitalLevelData.length > 0 ? safeDigitalLevelData[0] : null
+  const topTool = safeDigitalToolsData.length > 0 ? safeDigitalToolsData[0] : null
 
-  const noGrowthReasonsTruncated = noGrowthReasons.map(r => ({
+  const noGrowthReasonsTruncated = safeNoGrowthReasons.map(r => ({
     ...r,
+    reason: r.reason || '',
     reasonShort: truncateText(r.reason, 25),
   }))
 
-  const digitalToolsTruncated = digitalToolsData.map(t => ({
+  const digitalToolsTruncated = safeDigitalToolsData.map(t => ({
     ...t,
+    tool: t.tool || '',
     toolShort: truncateText(t.tool, 20),
   }))
 
@@ -140,7 +148,7 @@ export function SlideTechnology({
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={wantsGrowthData}
+                  data={safeWantsGrowthData}
                   cx="50%"
                   cy="50%"
                   innerRadius={70}
@@ -148,14 +156,14 @@ export function SlideTechnology({
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {wantsGrowthData.map((entry, index) => (
+                  {safeWantsGrowthData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                   formatter={(value: number, name: string, props: any) => [
-                    `${value} (${props.payload.percentage}%)`,
+                    `${value} (${props.payload.percentage || 0}%)`,
                     name
                   ]}
                 />
@@ -192,10 +200,9 @@ export function SlideTechnology({
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
-                      `${value} (${props.payload.percentage}%)`,
+                      `${value} (${props.payload.percentage || 0}%)`,
                       'Cantidad'
                     ]}
-                    labelFormatter={(label: string, props: any) => props.payload.reason}
                   />
                   <Bar dataKey="count" fill="#1a3a5c" radius={[0, 4, 4, 0]} />
                 </BarChart>
@@ -215,10 +222,10 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Nivel de Tecnología
             </h3>
-            {digitalLevelData.length > 0 ? (
+            {safeDigitalLevelData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
-                  data={digitalLevelData}
+                  data={safeDigitalLevelData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -233,12 +240,12 @@ export function SlideTechnology({
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
-                      `${value} (${props.payload.percentage}%)`,
+                      `${value} (${props.payload.percentage || 0}%)`,
                       'Cantidad'
                     ]}
                   />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {digitalLevelData.map((entry, index) => (
+                    {safeDigitalLevelData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
@@ -277,10 +284,9 @@ export function SlideTechnology({
                   <Tooltip
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
-                      `${value} (${props.payload.percentage}%)`,
+                      `${value} (${props.payload.percentage || 0}%)`,
                       'Cantidad'
                     ]}
-                    labelFormatter={(label: string, props: any) => props.payload.tool}
                   />
                   <Bar dataKey="count" fill="#ED7D31" radius={[0, 4, 4, 0]} />
                 </BarChart>
@@ -302,8 +308,10 @@ export function SlideTechnology({
 function SlideFooter({ page }: { page: number }) {
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card 0{page - 1}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">
