@@ -1,10 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, ArrowRight } from 'lucide-react'
+import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, LineChart, ArrowRight } from 'lucide-react'
 
 interface RoadmapCardsProps {
-  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology') => void
+  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression') => void
   disabled: boolean
 }
 
@@ -74,6 +74,17 @@ const cards = [
     bgColor: 'bg-accent/10',
     borderHover: 'hover:border-accent/40',
     tags: ['Growth Willingness', 'Digital Level', 'Tech Tools'],
+  },
+  {
+    id: 'regression' as const,
+    number: '07',
+    title: 'Análisis de Regresión Lineal',
+    subtitle: 'Correlation analysis between credit, technology and sales expectations',
+    icon: LineChart,
+    color: 'text-primary',
+    bgColor: 'bg-primary/10',
+    borderHover: 'hover:border-primary/40',
+    tags: ['P-value', 'R²', 'Statistical Significance'],
   },
 ]
 

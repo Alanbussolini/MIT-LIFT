@@ -653,3 +653,318 @@ export function computeSalaryDistribution(rows: SurveyRow[]): SalaryRangeData[] 
 
   return ranges.map(r => ({ range: r.range, count: counts[r.range] }))
 }
+
+export interface ScatterPoint {
+  x: number
+  y: number
+}
+
+export interface LinearRegressionResult {
+  slope: number
+  intercept: number
+  rSquared: number
+  pValue: number
+  correlation: number
+  n: number
+  standardError: number
+  tStatistic: number
+  scatterData: ScatterPoint[]
+  regressionLine: ScatterPoint[]
+  xLabel: string
+  yLabel: string
+  interpretation: string
+  hasCorrelation: boolean
+}
+
+function salesExpectationToNumber(value: string): number | null {
+  if (!value) return null
+  const normalized = value.toLowerCase().trim()
+  if (normalized.includes('mayor') || normalized.includes('higher') || normalized.includes('increase')) return 1
+  if (normalized.includes('igual') || normalized.includes('same') || normalized.includes('equal')) return 0
+  if (normalized.includes('menor') || normalized.includes('lower') || normalized.includes('decrease')) return -1
+  return null
+}
+
+function digitalLevelToNumber(level: string): number | null {
+  if (!level || level === '' || level === '-') return null
+  const normalized = level.toLowerCase().trim()
+  if (normalized.includes('alto') || normalized.includes('high')) return 3
+  if (normalized.includes('medio') || normalized.includes('medium') || normalized.includes('moderate')) return 2
+  if (normalized.includes('bajo') || normalized.includes('low') || normalized.includes('basic')) return 1
+  if (normalized.includes('ninguno') || normalized.includes('none') || normalized.includes('no')) return 0
+  const knownLevels: Record<string, number> = {
+    'alto': 3,
+    'medio': 2,
+    'bajo': 1,
+    'ninguno': 0,
+  }
+  return knownLevels[normalized] ?? null
+}
+
+function creditScore(row: SurveyRow): number {
+  let score = 0
+  if (row.creditBank === 'Sí') score += 1
+  if (row.creditProviders === 'Sí') score += 1
+  if (row.creditFamily === 'Sí') score += 1
+  if (row.creditGovernment === 'Sí') score += 1
+  if (row.creditPrivate === 'Sí') score += 1
+  return score
+}
+
+function computeLinearRegression(xData: number[], yData: number[]): {
+  slope: number
+  intercept: number
+  rSquared: number
+  correlation: number
+  standardError: number
+  tStatistic: number
+  pValue: number
+} {
+  const n = xData.length
+  if (n < 3) {
+    return { slope: 0, intercept: 0, rSquared: 0, correlation: 0, standardError: 0, tStatistic: 0, pValue: 1 }
+  }
+
+  const xMean = xData.reduce((a, b) => a + b, 0) / n
+  const yMean = yData.reduce((a, b) => a + b, 0) / n
+
+  let ssXy = 0
+  let ssXx = 0
+  let ssYy = 0
+
+  for (let i = 0; i < n; i++) {
+    const dx = xData[i] - xMean
+    const dy = yData[i] - yMean
+    ssXy += dx * dy
+    ssXx += dx * dx
+    ssYy += dy * dy
+  }
+
+  const slope = ssXx !== 0 ? ssXy / ssXx : 0
+  const intercept = yMean - slope * xMean
+
+  const correlation = ssXx > 0 && ssYy > 0 ? ssXy / Math.sqrt(ssXx * ssYy) : 0
+  const rSquared = correlation * correlation
+
+  let sse = 0
+  for (let i = 0; i < n; i++) {
+    const predicted = slope * xData[i] + intercept
+    sse += (yData[i] - predicted) ** 2
+  }
+
+  const standardError = n > 2 ? Math.sqrt(sse / (n - 2)) : 0
+  const seSlope = ssXx > 0 ? standardError / Math.sqrt(ssXx) : 0
+  const tStatistic = seSlope > 0 ? slope / seSlope : 0
+
+  const df = n - 2
+  const pValue = tDistributionPValue(Math.abs(tStatistic), df)
+
+  return { slope, intercept, rSquared, correlation, standardError, tStatistic, pValue }
+}
+
+function tDistributionPValue(t: number, df: number): number {
+  if (df < 1 || t < 0) return 1
+  
+  const x = df / (df + t * t)
+  return 2 * incompleteBeta(df / 2, 0.5, x)
+}
+
+function incompleteBeta(a: number, b: number, x: number): number {
+  if (x < 0 || x > 1) return 0
+  if (x === 0) return 0
+  if (x === 1) return 1
+  
+  const maxIterations = 200
+  const eps = 1e-10
+  
+  const front = Math.exp(
+    logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x)
+  ) / a
+  
+  let f = 1
+  let c = 1
+  let d = 1 - (a + b) * x / (a + 1)
+  if (Math.abs(d) < eps) d = eps
+  d = 1 / d
+  let h = d
+  
+  for (let m = 1; m <= maxIterations; m++) {
+    const m2 = 2 * m
+    let aa = m * (b - m) * x / ((a + m2 - 1) * (a + m2))
+    d = 1 + aa * d
+    if (Math.abs(d) < eps) d = eps
+    c = 1 + aa / c
+    if (Math.abs(c) < eps) c = eps
+    d = 1 / d
+    h *= d * c
+    
+    aa = -(a + m) * (a + b + m) * x / ((a + m2) * (a + m2 + 1))
+    d = 1 + aa * d
+    if (Math.abs(d) < eps) d = eps
+    c = 1 + aa / c
+    if (Math.abs(c) < eps) c = eps
+    d = 1 / d
+    const delta = d * c
+    h *= delta
+    
+    if (Math.abs(delta - 1) < eps) break
+  }
+  
+  return front * h
+}
+
+function logGamma(x: number): number {
+  const cof = [
+    76.18009172947146,
+    -86.50532032941677,
+    24.01409824083091,
+    -1.231739572450155,
+    0.1208650973866179e-2,
+    -0.5395239384953e-5
+  ]
+  
+  let ser = 1.000000000190015
+  let tmp = x + 5.5
+  tmp -= (x + 0.5) * Math.log(tmp)
+  
+  for (let j = 0; j < 6; j++) {
+    ser += cof[j] / (x + j + 1)
+  }
+  
+  return -tmp + Math.log(2.5066282746310005 * ser / x)
+}
+
+function generateRegressionLine(slope: number, intercept: number, xMin: number, xMax: number): ScatterPoint[] {
+  return [
+    { x: xMin, y: slope * xMin + intercept },
+    { x: xMax, y: slope * xMax + intercept },
+  ]
+}
+
+function interpretRegression(correlation: number, pValue: number, rSquared: number): { interpretation: string; hasCorrelation: boolean } {
+  const absR = Math.abs(correlation)
+  const isSignificant = pValue < 0.05
+  
+  let strength: string
+  if (absR < 0.1) strength = 'muy débil o inexistente'
+  else if (absR < 0.3) strength = 'débil'
+  else if (absR < 0.5) strength = 'moderada'
+  else if (absR < 0.7) strength = 'considerable'
+  else strength = 'fuerte'
+  
+  const direction = correlation > 0 ? 'positiva' : 'negativa'
+  
+  let interpretation = `La correlación es ${strength} (${direction}). `
+  interpretation += `R² = ${(rSquared * 100).toFixed(1)}% indica que la variable independiente explica el ${(rSquared * 100).toFixed(1)}% de la varianza. `
+  interpretation += `El p-valor = ${pValue.toFixed(4)} ${isSignificant ? 'es estadísticamente significativo (p < 0.05)' : 'no es estadísticamente significativo (p ≥ 0.05)'}. `
+  
+  if (isSignificant && absR >= 0.1) {
+    interpretation += `Existe evidencia estadística para afirmar que hay una correlación ${direction} ${strength}.`
+  } else if (!isSignificant) {
+    interpretation += `No hay evidencia suficiente para rechazar la hipótesis nula de que no existe correlación.`
+  } else {
+    interpretation += `Aunque el p-valor sugiere significancia, la magnitud de la correlación es demasiado pequeña para ser relevante.`
+  }
+  
+  return { interpretation, hasCorrelation: isSignificant && absR >= 0.1 }
+}
+
+export function computeCreditSalesExpectationRegression(rows: SurveyRow[]): LinearRegressionResult {
+  const points: { x: number; y: number }[] = []
+  
+  rows.forEach(row => {
+    const x = creditScore(row)
+    const y = salesExpectationToNumber(row.salesExpectation)
+    if (y !== null) {
+      points.push({ x, y })
+    }
+  })
+  
+  if (points.length < 3) {
+    return {
+      slope: 0,
+      intercept: 0,
+      rSquared: 0,
+      pValue: 1,
+      correlation: 0,
+      n: points.length,
+      standardError: 0,
+      tStatistic: 0,
+      scatterData: points,
+      regressionLine: [],
+      xLabel: 'Nivel de Acceso al Crédito (0-5)',
+      yLabel: 'Expectativa de Ventas (-1 a 1)',
+      interpretation: 'Datos insuficientes para realizar el análisis.',
+      hasCorrelation: false,
+    }
+  }
+  
+  const xData = points.map(p => p.x)
+  const yData = points.map(p => p.y)
+  const stats = computeLinearRegression(xData, yData)
+  const { interpretation, hasCorrelation } = interpretRegression(stats.correlation, stats.pValue, stats.rSquared)
+  
+  const xMin = Math.min(...xData)
+  const xMax = Math.max(...xData)
+  
+  return {
+    ...stats,
+    n: points.length,
+    scatterData: points,
+    regressionLine: generateRegressionLine(stats.slope, stats.intercept, xMin, xMax),
+    xLabel: 'Nivel de Acceso al Crédito (0-5)',
+    yLabel: 'Expectativa de Ventas (-1 a 1)',
+    interpretation,
+    hasCorrelation,
+  }
+}
+
+export function computeTechnologySalesExpectationRegression(rows: SurveyRow[]): LinearRegressionResult {
+  const points: { x: number; y: number }[] = []
+  
+  rows.forEach(row => {
+    const x = digitalLevelToNumber(row.digitalLevel)
+    const y = salesExpectationToNumber(row.salesExpectation)
+    if (x !== null && y !== null) {
+      points.push({ x, y })
+    }
+  })
+  
+  if (points.length < 3) {
+    return {
+      slope: 0,
+      intercept: 0,
+      rSquared: 0,
+      pValue: 1,
+      correlation: 0,
+      n: points.length,
+      standardError: 0,
+      tStatistic: 0,
+      scatterData: points,
+      regressionLine: [],
+      xLabel: 'Nivel de Tecnología (0-3)',
+      yLabel: 'Expectativa de Ventas (-1 a 1)',
+      interpretation: 'Datos insuficientes para realizar el análisis.',
+      hasCorrelation: false,
+    }
+  }
+  
+  const xData = points.map(p => p.x)
+  const yData = points.map(p => p.y)
+  const stats = computeLinearRegression(xData, yData)
+  const { interpretation, hasCorrelation } = interpretRegression(stats.correlation, stats.pValue, stats.rSquared)
+  
+  const xMin = Math.min(...xData)
+  const xMax = Math.max(...xData)
+  
+  return {
+    ...stats,
+    n: points.length,
+    scatterData: points,
+    regressionLine: generateRegressionLine(stats.slope, stats.intercept, xMin, xMax),
+    xLabel: 'Nivel de Tecnología (0-3)',
+    yLabel: 'Expectativa de Ventas (-1 a 1)',
+    interpretation,
+    hasCorrelation,
+  }
+}
