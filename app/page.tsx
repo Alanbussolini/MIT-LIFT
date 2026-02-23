@@ -39,6 +39,7 @@ import {
   computeCreditSalesExpectationRegression,
   computeTechnologySalesExpectationRegression,
   computeTechnologySalaryRegression,
+  computeTechnologyBusinessAgeRegression,
   computeMostFrequentBusinessType,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
@@ -77,6 +78,8 @@ export default function Home() {
   const creditRegression = computeCreditSalesExpectationRegression(rows)
   const technologyRegression = computeTechnologySalesExpectationRegression(rows)
   const salaryRegression = computeTechnologySalaryRegression(rows)
+  const techBusinessAgeRegression = computeTechnologyBusinessAgeRegression(rows)
+  const techSalaryRegression = computeTechnologySalaryRegression(rows)
   const mostFrequentBusinessType = computeMostFrequentBusinessType(rows)
 
   const goBack = () => setActiveView(null)
@@ -177,6 +180,8 @@ export default function Home() {
             digitalLevelData={digitalLevelData}
             digitalToolsData={digitalToolsData}
             yesPct={wantsGrowth.yesPct}
+            techBusinessAgeRegression={techBusinessAgeRegression}
+            techSalaryRegression={techSalaryRegression}
             onBack={goBack}
           />
         </motion.div>

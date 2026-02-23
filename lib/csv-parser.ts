@@ -1058,3 +1058,53 @@ export function computeTechnologySalaryRegression(rows: SurveyRow[]): LinearRegr
     hasCorrelation,
   }
 }
+
+export function computeTechnologyBusinessAgeRegression(rows: SurveyRow[]): LinearRegressionResult {
+  const points: { x: number; y: number }[] = []
+  
+  rows.forEach(row => {
+    const x = digitalLevelToNumber(row.digitalLevel)
+    const y = row.businessAge
+    if (x !== null && y !== null && y >= 0) {
+      points.push({ x, y })
+    }
+  })
+  
+  if (points.length < 3) {
+    return {
+      slope: 0,
+      intercept: 0,
+      rSquared: 0,
+      pValue: 1,
+      correlation: 0,
+      n: points.length,
+      standardError: 0,
+      tStatistic: 0,
+      scatterData: points,
+      regressionLine: [],
+      xLabel: 'Nivel de Tecnología (0-3)',
+      yLabel: 'Edad del Negocio (años)',
+      interpretation: 'Datos insuficientes para realizar el análisis.',
+      hasCorrelation: false,
+    }
+  }
+  
+  const xData = points.map(p => p.x)
+  const yData = points.map(p => p.y)
+  const stats = computeLinearRegression(xData, yData)
+  const { interpretation, hasCorrelation } = interpretRegression(stats.correlation, stats.pValue, stats.rSquared)
+  
+  const xMin = Math.min(...xData)
+  const xMax = Math.max(...xData)
+  
+  return {
+    ...stats,
+    n: points.length,
+    scatterData: points,
+    regressionLine: generateRegressionLine(stats.slope, stats.intercept, xMin, xMax),
+    xLabel: 'Nivel de Tecnología (0-3)',
+    yLabel: 'Edad del Negocio (años)',
+    interpretation,
+    hasCorrelation,
+  }
+}
