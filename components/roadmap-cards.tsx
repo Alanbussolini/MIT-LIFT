@@ -1,25 +1,14 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, LineChart, TrendingUp, Flag, ArrowRight } from 'lucide-react'
+import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, LineChart, TrendingUp, ArrowRight } from 'lucide-react'
 
 interface RoadmapCardsProps {
-  onSelectCard: (card: 'argentina' | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression') => void
+  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression') => void
   disabled: boolean
 }
 
 const cards = [
-  {
-    id: 'argentina' as const,
-    number: '00',
-    title: 'National Benchmark: The SME Landscape in Argentina',
-    subtitle: 'Macro-contextual frame: CEPAL projections, failure rates, and entrepreneurial activity',
-    icon: Flag,
-    color: 'text-muted-foreground',
-    bgColor: 'bg-muted',
-    borderHover: 'hover:border-muted-foreground/40',
-    tags: ['80% Failure Rate', '30% Longevity', 'External Data'],
-  },
   {
     id: 'economy' as const,
     number: '01',
@@ -133,8 +122,8 @@ export function RoadmapCards({ onSelectCard, disabled }: RoadmapCardsProps) {
             <motion.button
               key={card.id}
               onClick={() => onSelectCard(card.id)}
-              disabled={card.id !== 'economy' && card.id !== 'argentina' && disabled}
-              className={`group relative flex w-full cursor-pointer flex-col gap-4 rounded-xl border-2 border-border ${card.id === 'argentina' ? 'bg-muted/50' : 'bg-card'} p-6 text-left shadow-sm transition-all duration-300 ${card.borderHover} hover:shadow-lg hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-default disabled:opacity-40`}
+              disabled={card.id !== 'economy' && disabled}
+              className={`group relative flex w-full cursor-pointer flex-col gap-4 rounded-xl border-2 border-border bg-card p-6 text-left shadow-sm transition-all duration-300 ${card.borderHover} hover:shadow-lg hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-default disabled:opacity-40`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.7 + idx * 0.15 }}
@@ -177,7 +166,7 @@ export function RoadmapCards({ onSelectCard, disabled }: RoadmapCardsProps) {
               </div>
 
               {/* Disabled overlay hint */}
-              {card.id !== 'economy' && card.id !== 'argentina' && disabled && (
+              {card.id !== 'economy' && disabled && (
                 <span className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/60 text-xs font-medium text-muted-foreground">
                   {'Upload CSV to unlock'}
                 </span>

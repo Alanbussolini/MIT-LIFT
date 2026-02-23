@@ -13,7 +13,6 @@ import { SlideCredit } from '@/components/slide-credit'
 import { SlideTechnology } from '@/components/slide-technology'
 import { SlideRegression } from '@/components/slide-regression'
 import { SlideSalaryRegression } from '@/components/slide-salary-regression'
-import { SlideArgentinaBenchmark } from '@/components/slide-argentina-benchmark'
 import { parseCSV } from '@/lib/csv-parser'
 import {
   computeAgeGenderData,
@@ -45,7 +44,7 @@ import {
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
 
-type ActiveView = null | 'argentina' | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression'
+type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression'
 
 export default function Home() {
   const [csvText, setCsvText] = useState<string | null>(null)
@@ -84,17 +83,7 @@ export default function Home() {
 
   return (
     <AnimatePresence mode="wait">
-      {activeView === 'argentina' ? (
-        <motion.div
-          key="argentina"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.35 }}
-        >
-          <SlideArgentinaBenchmark onBack={goBack} />
-        </motion.div>
-      ) : activeView === 'economy' ? (
+      {activeView === 'economy' ? (
         <motion.div
           key="economy"
           initial={{ opacity: 0, x: 40 }}

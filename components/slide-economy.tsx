@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowLeft, Users, MapPin, ShoppingBasket, ShieldAlert, Zap, Target } from 'lucide-react'
+import { ArrowLeft, Users, MapPin, ShoppingBasket, ShieldAlert, Zap, Target, TrendingDown, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface SlideEconomyProps {
@@ -80,6 +80,25 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
             </span>
           </motion.div>
         </div>
+
+        {/* Argentina National Context */}
+        <motion.div
+          className="mb-12 w-full"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.25 }}
+        >
+          <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
+            Argentina: National Context
+          </h3>
+          <div className="rounded-xl border border-border bg-muted/30 p-6 space-y-4">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              In Argentina, the SME landscape presents significant challenges: <span className="font-semibold text-foreground">80% of startups do not survive their first year</span>, while only <span className="font-semibold text-foreground">30% of businesses reach 8 years of operation</span>. Nearly <span className="font-semibold text-accent">28.8% of entrepreneurs operate in the retail sector</span>, specifically within the nanostore category, making this research particularly relevant for the country&apos;s economic development.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              According to <span className="font-semibold text-foreground">CEPAL projections</span>, private consumption growth for 2025 and 2026 is expected to remain weak, placing significant pressure on the profitability and survival of neighborhood stores. However, approximately <span className="font-semibold text-primary">23.3% of the adult population</span> is involved in entrepreneurial activities, underscoring the vital importance of these firms for the local economy.
+            </p>
+          </div>
+        </motion.div>
 
         {/* Defining Characteristics */}
         <motion.div
@@ -163,6 +182,37 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground leading-relaxed">
             {'Identify the key factors that determine the survival and economic growth of nanostores in Latin America.'}
           </p>
+        </motion.div>
+
+        {/* Source */}
+        <motion.div
+          className="w-full rounded-xl border border-border bg-muted/50 p-4"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-muted">
+                <ExternalLink className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Source
+                </span>
+                <p className="text-sm font-medium text-foreground">
+                  IMPACTO ECONÓMICO y SOCIAL DE LAS MiPyMES EN ARGENTINA (Senate Report)
+                </p>
+              </div>
+            </div>
+            <a
+              href="https://www.senado.gob.ar/upload/archivo/48498"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              View Report
+            </a>
+          </div>
         </motion.div>
       </div>
 
