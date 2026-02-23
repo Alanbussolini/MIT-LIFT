@@ -92,7 +92,7 @@ export function SlideSalaryRegression({
         />
       </div>
 
-      <SlideFooter page={8} />
+      <SlideFooter page={9} />
     </section>
   )
 }
@@ -386,10 +386,13 @@ function StatParameters({ regression }: { regression: LinearRegressionResult }) 
 }
 
 function SlideFooter({ page }: { page: number }) {
+  const cardNum = page - 1
   return (
     <div className="flex items-center justify-between border-t border-border bg-foreground px-6 py-2.5 text-xs text-primary-foreground">
-      <span className="opacity-70">liftlab.mit.edu</span>
-      <span className="opacity-70">Page {page}</span>
+      <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+        liftlab.mit.edu
+      </a>
+      <span className="opacity-70">Card {cardNum.toString().padStart(2, '0')}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">
