@@ -232,11 +232,13 @@ export function SlideOwner({
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h3 className="mb-1 text-sm font-bold text-card-foreground">
-              {'Education Level Achieved'}
+              {'Nivel Educativo Alcanzado'}
             </h3>
-            <p className="mb-3 text-[10px] text-muted-foreground">
-              Note: Preparatoria (US high school) is combined with Secundaria, as it equates to the final years of bachillerato in Argentina.
-            </p>
+            <div className="mb-3 p-2 rounded bg-amber-50 border border-amber-200">
+              <p className="text-[10px] text-amber-800">
+                <strong>Nota:</strong> Se utiliza el supuesto de que el nivel educativo "Preparatoria" es parte de Secundaria, ya que la Preparatoria corresponde a la edad 15-18, la cual en Argentina es parte de la secundaria.
+              </p>
+            </div>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart
                 data={[...educationData].reverse()}

@@ -135,7 +135,7 @@ export function SlideCredit({
               </span>
             </div>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Formal / Informal
+              Institucional / No Institucional
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
@@ -266,26 +266,26 @@ export function SlideCredit({
             </ResponsiveContainer>
           </motion.div>
 
-          {/* Chart 3: Formal vs Informal Credit (Donut) */}
+          {/* Chart 3: Institucional vs No Institucional Credit (Donut) */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h3 className="mb-1 text-sm font-bold text-card-foreground">
-              Formal vs. Informal Credit
+              Crédito Institucional vs No Institucional
             </h3>
-            <p className="mb-4 text-[11px] text-muted-foreground">
-              {'Formal (Banks, Suppliers, Govt) vs Informal (Family, Private)'}
+            <p className="mb-2 text-[11px] text-muted-foreground">
+              Distribución de fuentes de crédito por tipo
             </p>
-            <ResponsiveContainer width="100%" height={260}>
+            <ResponsiveContainer width="100%" height={220}>
               <PieChart>
                 <Pie
                   data={formalInformalChartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={65}
-                  outerRadius={100}
+                  innerRadius={55}
+                  outerRadius={85}
                   paddingAngle={3}
                   dataKey="value"
                   nameKey="name"
@@ -310,6 +310,14 @@ export function SlideCredit({
                 />
               </PieChart>
             </ResponsiveContainer>
+            <div className="mt-2 p-2 rounded bg-muted/50 border border-border">
+              <p className="text-[10px] text-muted-foreground">
+                <strong>Institucional:</strong> Bancos, Crédito Privado, Gobierno
+              </p>
+              <p className="text-[10px] text-muted-foreground">
+                <strong>No Institucional:</strong> Proveedores, Familia
+              </p>
+            </div>
           </motion.div>
 
           {/* Chart 4: Barriers to Bank Credit (Horizontal Bar) */}

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowLeft, Users, MapPin, ShoppingBasket, ShieldAlert, Zap, Target, TrendingDown, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Users, MapPin, ShoppingBasket, ShieldAlert, Zap, Target, TrendingDown, ExternalLink, Database, CreditCard, Cpu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface SlideEconomyProps {
@@ -173,14 +173,56 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
 
         {/* Mission / Objective */}
         <motion.div
-          className="w-full rounded-xl border-2 border-primary/30 bg-primary/5 p-8 text-center"
+          className="w-full rounded-xl border-2 border-primary/30 bg-primary/5 p-8"
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <Target className="mx-auto mb-3 h-8 w-8 text-primary" />
-          <h3 className="text-lg font-bold text-foreground">Research Objective</h3>
-          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground leading-relaxed">
-            {'Identify the key factors that determine the survival and economic growth of nanostores in Latin America.'}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Target className="h-6 w-6 text-primary" />
+            <h3 className="text-lg font-bold text-foreground">Research Objective</h3>
+          </div>
+          <p className="mx-auto max-w-2xl text-sm text-muted-foreground leading-relaxed text-center mb-6">
+            {'Identify the key factors that determine the survival and economic growth of nanostores in Latin America through two main research verticals:'}
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-card p-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <CreditCard className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-bold text-foreground text-sm">Access to Credit</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Analyze how access to formal and informal credit affects nanostore growth and survival rates
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-lg border border-accent/20 bg-card p-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+                <Cpu className="h-5 w-5 text-accent" />
+              </div>
+              <div>
+                <p className="font-bold text-foreground text-sm">Technology Adoption</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Examine how digital technology adoption impacts nanostore growth and long-term sustainability
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Data Cleaning Criteria */}
+        <motion.div
+          className="w-full rounded-xl border border-border bg-muted/30 p-5"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.55 }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Database className="h-4 w-4 text-muted-foreground" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Data Cleaning Criteria</h4>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            All incomplete responses were removed using the <span className="font-semibold text-foreground">"Finished" = true</span> column filter to ensure data quality and consistency.
           </p>
         </motion.div>
 

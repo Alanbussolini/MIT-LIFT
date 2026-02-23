@@ -478,8 +478,8 @@ export function computeFormalInformalCredit(rows: SurveyRow[]): {
   let informal = 0
 
   rows.forEach(row => {
-    const hasFormal = row.creditBank === 'Sí' || row.creditProviders === 'Sí' || row.creditGovernment === 'Sí'
-    const hasInformal = row.creditFamily === 'Sí' || row.creditPrivate === 'Sí'
+    const hasFormal = row.creditBank === 'Sí' || row.creditPrivate === 'Sí' || row.creditGovernment === 'Sí'
+    const hasInformal = row.creditProviders === 'Sí' || row.creditFamily === 'Sí'
     if (hasFormal) formal++
     if (hasInformal) informal++
   })
@@ -494,8 +494,8 @@ export function computeFormalInformalCredit(rows: SurveyRow[]): {
     formalPct,
     informalPct,
     chartData: [
-      { name: 'Formal', value: formal },
-      { name: 'Informal', value: informal },
+      { name: 'Institucional', value: formal },
+      { name: 'No Institucional', value: informal },
     ],
   }
 }
@@ -1107,4 +1107,47 @@ export function computeTechnologyBusinessAgeRegression(rows: SurveyRow[]): Linea
     interpretation,
     hasCorrelation,
   }
+}
+
+export interface GeoPoint {
+  lat: number
+  lng: number
+  businessType: string
+  businessName: string
+}
+
+export function computeAMBAgeoPoints(rows: SurveyRow[]): GeoPoint[] {
+  const points: GeoPoint[] = []
+  
+  const AMBA_BOUNDS = {
+    latMin: -35.0,
+    latMax: -34.3,
+    lngMin: -59.0,
+    lngMax: -58.0,
+  }
+  
+  rows.forEach(row => {
+    if (row.latitude && row.longitude) {
+      const lat = parseFloat(row.latitude.replace(',', '.'))
+      const lng = parseFloat(row.longitude.replace(',', '.'))
+      
+      if (
+        !isNaN(lat) &&
+        !isNaN(lng) &&
+        lat >= AMBA_BOUNDS.latMin &&
+        lat <= AMBA_BOUNDS.latMax &&
+        lng >= AMBA_BOUNDS.lngMin &&
+        lng <= AMBA_BOUNDS.lngMax
+      ) {
+        points.push({
+          lat,
+          lng,
+          businessType: row.businessType || 'Unknown',
+          businessName: row.businessName || '',
+        })
+      }
+    }
+  })
+  
+  return points
 }

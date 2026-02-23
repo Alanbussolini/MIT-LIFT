@@ -19,7 +19,6 @@ import {
   Scatter,
   Line,
   ComposedChart,
-  ReferenceLine,
 } from 'recharts'
 import type {
   WantsGrowthData,
@@ -47,12 +46,6 @@ const fadeUp = {
 
 const COLORS = ['#1a3a5c', '#ED7D31', '#4472C4', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47', '#9E480E']
 
-function truncateText(text: string | undefined | null, maxLength: number): string {
-  if (!text) return ''
-  if (text.length <= maxLength) return text
-  return text.substring(0, maxLength) + '...'
-}
-
 function addJitter(value: number, intensity: number = 0.1): number {
   return value + (Math.random() - 0.5) * intensity * 2
 }
@@ -75,20 +68,18 @@ export function SlideTechnology({
   const topDigitalLevel = safeDigitalLevelData.length > 0 ? safeDigitalLevelData[0] : null
   const topTool = safeDigitalToolsData.length > 0 ? safeDigitalToolsData[0] : null
 
-  const noGrowthReasonsTruncated = safeNoGrowthReasons.map(r => ({
+  const noGrowthReasonsExtended = safeNoGrowthReasons.slice(0, 5).map(r => ({
     ...r,
     reason: r.reason || '',
-    reasonShort: truncateText(r.reason, 25),
   }))
 
-  const digitalToolsTruncated = safeDigitalToolsData.map(t => ({
+  const digitalToolsExtended = safeDigitalToolsData.slice(0, 6).map(t => ({
     ...t,
     tool: t.tool || '',
-    toolShort: truncateText(t.tool, 20),
   }))
 
   const businessAgeChartData = techBusinessAgeRegression.scatterData.map((point, idx) => ({
-    x: addJitter(point.x, 0.12),
+    x: addJitter(point.x, 0.15),
     y: point.y,
     originalX: point.x,
     id: idx,
@@ -100,7 +91,7 @@ export function SlideTechnology({
   }))
 
   const salaryChartData = techSalaryRegression.scatterData.map((point, idx) => ({
-    x: addJitter(point.x, 0.12),
+    x: addJitter(point.x, 0.15),
     y: point.y,
     originalX: point.x,
     id: idx,
@@ -166,11 +157,11 @@ export function SlideTechnology({
           )}
           {topTool && (
             <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
-              <span className="text-2xl font-black tracking-tight text-primary sm:text-3xl">
-                {topTool.percentage}%
+              <span className="text-xl font-black tracking-tight text-foreground sm:text-2xl text-center">
+                {topTool.tool}
               </span>
               <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-                {topTool.tool}
+                {topTool.percentage}% lo utiliza
               </span>
             </div>
           )}
@@ -222,29 +213,30 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Razones para no querer crecer
             </h3>
-            {noGrowthReasonsTruncated.length > 0 ? (
+            {noGrowthReasonsExtended.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart
-                  data={noGrowthReasonsTruncated.slice(0, 5)}
+                  data={noGrowthReasonsExtended}
                   layout="vertical"
                   margin={{ top: 5, right: 40, left: 10, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} />
                   <YAxis
-                    dataKey="reasonShort"
+                    dataKey="reason"
                     type="category"
-                    tick={{ fontSize: 11, fill: '#374151' }}
-                    width={180}
+                    tick={{ fontSize: 9, fill: '#374151' }}
+                    width={220}
+                    tickFormatter={(value) => value.length > 35 ? value.substring(0, 35) + '...' : value}
                   />
                   <Tooltip
-                    contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
                       `${value} (${props.payload.percentage || 0}%)`,
                       'Cantidad'
                     ]}
                   />
-                  <Bar dataKey="count" fill="#1a3a5c" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" fill="#ED7D31" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -266,19 +258,19 @@ export function SlideTechnology({
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart
                   data={safeDigitalLevelData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 70 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis
                     dataKey="level"
-                    tick={{ fontSize: 11, fill: '#374151' }}
-                    angle={-45}
+                    tick={{ fontSize: 10, fill: '#374151' }}
+                    angle={-30}
                     textAnchor="end"
-                    height={80}
+                    height={70}
                   />
-                  <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} />
                   <Tooltip
-                    contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
                       `${value} (${props.payload.percentage || 0}%)`,
                       'Cantidad'
@@ -306,29 +298,30 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Tecnologías más utilizadas
             </h3>
-            {digitalToolsTruncated.length > 0 ? (
+            {digitalToolsExtended.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart
-                  data={digitalToolsTruncated.slice(0, 6)}
+                  data={digitalToolsExtended}
                   layout="vertical"
                   margin={{ top: 5, right: 40, left: 10, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} />
                   <YAxis
-                    dataKey="toolShort"
+                    dataKey="tool"
                     type="category"
-                    tick={{ fontSize: 11, fill: '#374151' }}
-                    width={150}
+                    tick={{ fontSize: 9, fill: '#374151' }}
+                    width={180}
+                    tickFormatter={(value) => value.length > 30 ? value.substring(0, 30) + '...' : value}
                   />
                   <Tooltip
-                    contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
                       `${value} (${props.payload.percentage || 0}%)`,
                       'Cantidad'
                     ]}
                   />
-                  <Bar dataKey="count" fill="#ED7D31" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" fill="#4472C4" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -346,10 +339,13 @@ export function SlideTechnology({
         >
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-foreground">Correlation Analysis: Technology Impact</h3>
+            <h3 className="text-lg font-bold text-foreground">Análisis de Correlación</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-6">
-            Exploring whether higher technology adoption correlates with business survival and owner valuation
+            Explorando si la adopción de tecnología se correlaciona con la supervivencia del negocio y la valoración del dueño
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            <strong>Nivel de Tecnología codificado:</strong> Ninguno=0, Bajo/Básico=1, Medio=2, Alto=3
           </p>
         </motion.div>
 
@@ -368,50 +364,56 @@ export function SlideTechnology({
               </span>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
-              ¿Mayor tecnología = Mayor supervivencia?
+              ¿Mayor tecnología = Mayor supervivencia? (n={techBusinessAgeRegression.n})
             </p>
-            <ResponsiveContainer width="100%" height={250}>
-              <ComposedChart data={businessAgeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 30 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis
-                  type="number"
-                  dataKey="x"
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  domain={[-0.5, 3.5]}
-                  ticks={[0, 1, 2, 3]}
-                  label={{ value: 'Nivel de Tecnología', position: 'insideBottom', offset: -10, style: { fontSize: 9, fill: '#9ca3af' } }}
-                />
-                <YAxis
-                  type="number"
-                  dataKey="y"
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  label={{ value: 'Edad (años)', angle: -90, position: 'insideLeft', style: { fontSize: 9, fill: '#9ca3af' } }}
-                />
-                <Tooltip
-                  contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
-                  formatter={(value: number, name: string) => [name === 'y' ? `${value} años` : value.toFixed(1), name === 'y' ? 'Edad' : 'Tech Level']}
-                />
-                <Scatter data={businessAgeChartData} fill="#1a3a5c" fillOpacity={0.4} />
-                {businessAgeLineData.length === 2 && (
-                  <Line
-                    type="linear"
-                    data={businessAgeLineData}
-                    dataKey="y"
-                    stroke="#ED7D31"
-                    strokeWidth={2}
-                    dot={false}
+            {techBusinessAgeRegression.n > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <ComposedChart data={businessAgeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis
+                    type="number"
+                    dataKey="x"
+                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    domain={[-0.5, 3.5]}
+                    ticks={[0, 1, 2, 3]}
+                    tickFormatter={(v) => {
+                      const labels = ['Ninguno', 'Bajo', 'Medio', 'Alto']
+                      return labels[v] || v
+                    }}
                   />
-                )}
-              </ComposedChart>
-            </ResponsiveContainer>
+                  <YAxis
+                    type="number"
+                    dataKey="y"
+                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    label={{ value: 'Edad (años)', angle: -90, position: 'insideLeft', style: { fontSize: 9, fill: '#9ca3af' } }}
+                  />
+                  <Tooltip
+                    contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
+                    formatter={(value: number, name: string) => [name === 'y' ? `${value} años` : value.toFixed(1), name === 'y' ? 'Edad' : 'Tech Level']}
+                  />
+                  <Scatter data={businessAgeChartData} fill="#1a3a5c" fillOpacity={0.5} />
+                  {businessAgeLineData.length === 2 && (
+                    <Line
+                      type="linear"
+                      data={businessAgeLineData}
+                      dataKey="y"
+                      stroke="#ED7D31"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  )}
+                </ComposedChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-[250px] text-muted-foreground text-sm">
+                No hay datos con niveles de tecnología válidos para el análisis
+              </div>
+            )}
             <div className="mt-3 p-2 rounded bg-muted/50">
               <p className="text-[10px] text-muted-foreground">
                 {techBusinessAgeRegression.hasCorrelation 
                   ? `✓ Correlación ${techBusinessAgeRegression.correlation > 0 ? 'positiva' : 'negativa'} (p=${techBusinessAgeRegression.pValue.toFixed(4)})`
                   : `✗ Sin correlación significativa (p=${techBusinessAgeRegression.pValue.toFixed(4)})`
-                }
-                {techBusinessAgeRegression.hasCorrelation && techBusinessAgeRegression.correlation > 0 && 
-                  ` — Mayor tecnología se asocia con negocios más longevos`
                 }
               </p>
             </div>
@@ -431,51 +433,57 @@ export function SlideTechnology({
               </span>
             </div>
             <p className="text-xs text-muted-foreground mb-3">
-              ¿Mayor tecnología = Mayor valoración del dueño?
+              ¿Mayor tecnología = Mayor valoración del dueño? (n={techSalaryRegression.n})
             </p>
-            <ResponsiveContainer width="100%" height={250}>
-              <ComposedChart data={salaryChartData} margin={{ top: 10, right: 20, left: 60, bottom: 30 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis
-                  type="number"
-                  dataKey="x"
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  domain={[-0.5, 3.5]}
-                  ticks={[0, 1, 2, 3]}
-                  label={{ value: 'Nivel de Tecnología', position: 'insideBottom', offset: -10, style: { fontSize: 9, fill: '#9ca3af' } }}
-                />
-                <YAxis
-                  type="number"
-                  dataKey="y"
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
-                  domain={[0, Math.max(...salaryYValues) * 1.1]}
-                />
-                <Tooltip
-                  contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
-                  formatter={(value: number, name: string) => [name === 'y' ? `$${value.toLocaleString()}` : value.toFixed(1), name === 'y' ? 'Sueldo' : 'Tech Level']}
-                />
-                <Scatter data={salaryChartData} fill="#4472C4" fillOpacity={0.4} />
-                {salaryLineData.length === 2 && (
-                  <Line
-                    type="linear"
-                    data={salaryLineData}
-                    dataKey="y"
-                    stroke="#ED7D31"
-                    strokeWidth={2}
-                    dot={false}
+            {techSalaryRegression.n > 0 && salaryYValues.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <ComposedChart data={salaryChartData} margin={{ top: 10, right: 20, left: 60, bottom: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis
+                    type="number"
+                    dataKey="x"
+                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    domain={[-0.5, 3.5]}
+                    ticks={[0, 1, 2, 3]}
+                    tickFormatter={(v) => {
+                      const labels = ['Ninguno', 'Bajo', 'Medio', 'Alto']
+                      return labels[v] || v
+                    }}
                   />
-                )}
-              </ComposedChart>
-            </ResponsiveContainer>
+                  <YAxis
+                    type="number"
+                    dataKey="y"
+                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
+                    domain={[0, Math.max(...salaryYValues) * 1.1]}
+                  />
+                  <Tooltip
+                    contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
+                    formatter={(value: number, name: string) => [name === 'y' ? `$${value.toLocaleString()}` : value.toFixed(1), name === 'y' ? 'Sueldo' : 'Tech Level']}
+                  />
+                  <Scatter data={salaryChartData} fill="#4472C4" fillOpacity={0.5} />
+                  {salaryLineData.length === 2 && (
+                    <Line
+                      type="linear"
+                      data={salaryLineData}
+                      dataKey="y"
+                      stroke="#ED7D31"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  )}
+                </ComposedChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-[250px] text-muted-foreground text-sm">
+                No hay datos con niveles de tecnología válidos para el análisis
+              </div>
+            )}
             <div className="mt-3 p-2 rounded bg-muted/50">
               <p className="text-[10px] text-muted-foreground">
                 {techSalaryRegression.hasCorrelation 
                   ? `✓ Correlación ${techSalaryRegression.correlation > 0 ? 'positiva' : 'negativa'} (p=${techSalaryRegression.pValue.toFixed(4)})`
                   : `✗ Sin correlación significativa (p=${techSalaryRegression.pValue.toFixed(4)})`
-                }
-                {techSalaryRegression.hasCorrelation && techSalaryRegression.correlation > 0 && 
-                  ` — Mayor tecnología se asocia con mayor valoración del negocio`
                 }
               </p>
             </div>
@@ -483,7 +491,7 @@ export function SlideTechnology({
         </div>
       </div>
 
-      <SlideFooter page={6} />
+      <SlideFooter page={7} />
     </section>
   )
 }

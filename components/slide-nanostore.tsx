@@ -13,12 +13,16 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  ScatterChart,
+  Scatter,
+  Cell,
 } from 'recharts'
 import type {
   EmployeeCountData,
   BusinessAgeData,
   BusinessTypeRentalData,
   MostFrequentBusinessType,
+  GeoPoint,
 } from '@/lib/csv-parser'
 
 interface SlideNanostoreProps {
@@ -28,6 +32,7 @@ interface SlideNanostoreProps {
   averageEmployees: number
   averageBusinessAge: number
   mostFrequentBusinessType: MostFrequentBusinessType | null
+  geoPoints: GeoPoint[]
   onBack: () => void
 }
 
@@ -43,12 +48,20 @@ export function SlideNanostore({
   averageEmployees,
   averageBusinessAge,
   mostFrequentBusinessType,
+  geoPoints,
   onBack,
 }: SlideNanostoreProps) {
-  // Compute rental percentages from data
   const totalBusinesses = businessTypeData.reduce((sum, d) => sum + d.propio + d.rentado, 0)
   const totalRentado = businessTypeData.reduce((sum, d) => sum + d.rentado, 0)
   const rentedPct = totalBusinesses > 0 ? ((totalRentado / totalBusinesses) * 100).toFixed(2) : '0'
+
+  const mapData = geoPoints.map(p => ({
+    x: p.lng,
+    y: -p.lat,
+    ...p,
+  }))
+
+  const MAP_COLORS = ['#1a3a5c', '#ED7D31', '#4472C4', '#A5A5A5', '#FFC000', '#5B9BD5']
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -116,8 +129,61 @@ export function SlideNanostore({
           )}
         </motion.div>
 
-        {/* Charts Grid */}
+{/* Charts Grid */}
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_auto]">
+          {/* Geographic Distribution Map */}
+          <motion.div
+            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            {...fadeUp}
+            transition={{ duration: 0.5, delay: 0.15 }}
+          >
+            <h3 className="mb-1 text-sm font-bold text-card-foreground">
+              Geographic Distribution - AMBA
+            </h3>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Nanostore locations in Buenos Aires Metropolitan Area
+            </p>
+            {mapData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={260}>
+                <ScatterChart margin={{ top: 10, right: 10, left: 0, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis
+                    type="number"
+                    dataKey="x"
+                    domain={[-59.0, -58.0]}
+                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    tickFormatter={(v) => `${v.toFixed(1)}°`}
+                    label={{ value: 'Longitude', position: 'insideBottom', offset: -5, style: { fontSize: 9, fill: '#9ca3af' } }}
+                  />
+                  <YAxis
+                    type="number"
+                    dataKey="y"
+                    domain={[-35.0, -34.3]}
+                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                    tickFormatter={(v) => `${(-v).toFixed(1)}°`}
+                    label={{ value: 'Latitude', angle: -90, position: 'insideLeft', style: { fontSize: 9, fill: '#9ca3af' } }}
+                  />
+                  <Tooltip
+                    contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
+                    formatter={(value: number, name: string) => [
+                      name === 'x' ? `${value.toFixed(4)}°` : name === 'y' ? `${(-value).toFixed(4)}°` : value,
+                      name === 'x' ? 'Longitude' : name === 'y' ? 'Latitude' : name
+                    ]}
+                  />
+                  <Scatter data={mapData} fill="#1a3a5c">
+                    {mapData.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={MAP_COLORS[index % MAP_COLORS.length]} fillOpacity={0.7} />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-[260px] text-muted-foreground text-sm">
+                No geographic data available for AMBA region
+              </div>
+            )}
+          </motion.div>
+
           {/* Employee Count Chart */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
