@@ -12,19 +12,11 @@ import {
 } from 'recharts'
 import type {
   WantsGrowthData,
-  SalaryByTechLevel,
-  SalesByTechLevel,
-  TechSummary,
-  NoGrowthReasonData,
 } from '@/lib/csv-parser'
 
 interface SlideTechnologyProps {
   wantsGrowthData: WantsGrowthData[]
   yesPct: number
-  salaryByTechLevel: SalaryByTechLevel[]
-  salesByTechLevel: SalesByTechLevel[]
-  techSummary: TechSummary
-  noGrowthReasonsData: NoGrowthReasonData[]
   onBack: () => void
 }
 
@@ -38,17 +30,9 @@ const BLUE_COLORS = ['#1a3a5c', '#4472C4']
 export function SlideTechnology({
   wantsGrowthData,
   yesPct,
-  salaryByTechLevel,
-  salesByTechLevel,
-  techSummary,
-  noGrowthReasonsData,
   onBack,
 }: SlideTechnologyProps) {
   const safeWantsGrowthData = wantsGrowthData || []
-  const safeNoGrowthReasonsData = noGrowthReasonsData || []
-  
-  const top1Reason = safeNoGrowthReasonsData.length > 0 ? safeNoGrowthReasonsData[0] : null
-  const top2Reason = safeNoGrowthReasonsData.length > 1 ? safeNoGrowthReasonsData[1] : null
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -75,90 +59,23 @@ export function SlideTechnology({
           </h2>
         </motion.div>
 
-        <motion.div
-          className="mb-8 flex flex-col gap-4 sm:flex-row"
-          {...fadeUp}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/20 bg-card p-6 shadow-sm">
-            <span className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
-              {yesPct}%
-            </span>
-            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              quiere que su negocio crezca
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-accent sm:text-4xl">
-              {100 - yesPct}%
-            </span>
-            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              está satisfecho con su negocio
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
-              {top1Reason ? `${top1Reason.percentage}%` : '--'}
-            </span>
-            <span className="mt-1 text-center text-xs font-medium text-muted-foreground">
-              {top1Reason ? top1Reason.reason.substring(0, 30) : 'No hay datos'}
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
-              {top2Reason ? `${top2Reason.percentage}%` : '--'}
-            </span>
-            <span className="mt-1 text-center text-xs font-medium text-muted-foreground">
-              {top2Reason ? top2Reason.reason.substring(0, 30) : 'No hay datos'}
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/30 bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-primary sm:text-4xl">
-              {techSummary?.averageLevelLabel || 'N/A'}
-            </span>
-            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Nivel de tecnología promedio
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/30 bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-accent sm:text-4xl">
-              {techSummary?.electronicPaymentsPct || 0}%
-            </span>
-            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Pagos electrónicos
-            </span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="mb-8 flex flex-col gap-4 sm:flex-row"
-          {...fadeUp}
-          transition={{ duration: 0.5, delay: 0.15 }}
-        >
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-4 shadow-sm">
-            <span className="text-2xl font-black tracking-tight text-foreground">
-              {techSummary?.messagingAppsPct || 0}%
-            </span>
-            <span className="mt-1 text-center text-xs font-medium text-muted-foreground">
-              Apps de mensajería
-            </span>
-          </div>
-        </motion.div>
-
         <div className="space-y-6">
           <motion.div
             className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <ResponsiveContainer width="100%" height={300}>
+            <h3 className="mb-4 text-sm font-bold text-card-foreground">
+              ¿Quiere que su negocio crezca?
+            </h3>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={safeWantsGrowthData}
                   cx="50%"
                   cy="50%"
                   innerRadius={80}
-                  outerRadius={130}
+                  outerRadius={140}
                   paddingAngle={3}
                   dataKey="value"
                   nameKey="name"
