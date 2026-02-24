@@ -3,20 +3,20 @@
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+} from 'recharts'
 import type {
   WantsGrowthData,
-  NoGrowthReasonData,
-  DigitalLevelData,
-  DigitalToolsData,
   SalaryByTechLevel,
   SalesByTechLevel,
 } from '@/lib/csv-parser'
 
 interface SlideTechnologyProps {
   wantsGrowthData: WantsGrowthData[]
-  noGrowthReasons: NoGrowthReasonData[]
-  digitalLevelData: DigitalLevelData[]
-  digitalToolsData: DigitalToolsData[]
   yesPct: number
   salaryByTechLevel: SalaryByTechLevel[]
   salesByTechLevel: SalesByTechLevel[]
@@ -28,26 +28,18 @@ const fadeUp = {
   animate: { opacity: 1, y: 0 },
 }
 
-const BLUE_COLORS = ['#1a3a5c', '#2F5496', '#4472C4', '#5B8DD9', '#7FAEDE', '#A3C4E6', '#C7DCF0']
+const BLUE_COLORS = ['#1a3a5c', '#4472C4']
 
 export function SlideTechnology({
   wantsGrowthData,
-  noGrowthReasons,
-  digitalLevelData,
-  digitalToolsData,
   yesPct,
   salaryByTechLevel,
   salesByTechLevel,
   onBack,
 }: SlideTechnologyProps) {
   const safeWantsGrowthData = wantsGrowthData || []
-  const safeNoGrowthReasons = noGrowthReasons || []
-  const safeDigitalLevelData = digitalLevelData || []
-  const safeDigitalToolsData = digitalToolsData || []
   const safeSalaryByTechLevel = salaryByTechLevel || []
   const safeSalesByTechLevel = salesByTechLevel || []
-  
-  const topTool = safeDigitalToolsData.length > 0 ? safeDigitalToolsData[0] : null
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -63,7 +55,7 @@ export function SlideTechnology({
         </Button>
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pt-20 pb-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col px-4 pt-20 pb-8">
         <motion.div className="mb-8 text-center" {...fadeUp} transition={{ duration: 0.5 }}>
           <span className="mb-3 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
             06 - Technology Adoption
@@ -72,9 +64,6 @@ export function SlideTechnology({
             {'Nivel de Adopción de '}
             <span className="text-primary">Tecnología</span>
           </h2>
-          <p className="mt-3 text-sm text-muted-foreground max-w-xl mx-auto">
-            Growth willingness, barriers, technology adoption, salary and sales analysis
-          </p>
         </motion.div>
 
         <motion.div
@@ -90,37 +79,48 @@ export function SlideTechnology({
               Quiere que su negocio crezca
             </span>
           </div>
-          {topTool && (
-            <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
-              <span className="text-xl font-black tracking-tight text-foreground sm:text-2xl text-center">
-                {topTool.tool}
-              </span>
-              <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-                {topTool.percentage}% lo utiliza
-              </span>
-            </div>
-          )}
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="space-y-6">
           <motion.div
-            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               ¿Quiere que su negocio crezca?
             </h3>
-            <div className="flex items-center justify-center">
-              <div className="flex flex-col items-center gap-2">
+            <div className="flex items-center justify-center gap-12">
+              <div className="w-64 h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={safeWantsGrowthData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                      label={({ name, percentage }) => `${name}: ${percentage}%`}
+                      labelLine={true}
+                    >
+                      {safeWantsGrowthData.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={BLUE_COLORS[index % BLUE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-col gap-3">
                 {safeWantsGrowthData.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-3">
                     <div 
                       className="w-4 h-4 rounded" 
                       style={{ backgroundColor: BLUE_COLORS[idx % BLUE_COLORS.length] }}
                     />
-                    <span className="text-sm text-muted-foreground">{item.name}</span>
-                    <span className="text-sm font-semibold text-foreground">{item.percentage}%</span>
+                    <span className="text-sm font-medium text-foreground">{item.name}</span>
+                    <span className="text-sm font-bold text-primary">{item.percentage}%</span>
                   </div>
                 ))}
               </div>
@@ -128,7 +128,7 @@ export function SlideTechnology({
           </motion.div>
 
           <motion.div
-            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
@@ -143,7 +143,7 @@ export function SlideTechnology({
           </motion.div>
 
           <motion.div
-            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
@@ -158,7 +158,7 @@ export function SlideTechnology({
           </motion.div>
 
           <motion.div
-            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
@@ -171,25 +171,15 @@ export function SlideTechnology({
               className="w-full h-auto rounded-lg"
             />
           </motion.div>
-        </div>
 
-        <motion.div
-          className="mb-8"
-          {...fadeUp}
-          transition={{ duration: 0.5, delay: 0.55 }}
-        >
-          <h3 className="mb-6 text-lg font-bold text-foreground">Análisis por Nivel de Tecnología</h3>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <motion.div
-            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <h4 className="text-sm font-bold text-card-foreground mb-4">
+            <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Sueldo Pretendido vs Nivel de Tecnología
-            </h4>
+            </h3>
             <img 
               src="/images/descargar (3).png"
               alt="Sueldo Pretendido vs Nivel de Tecnología"
@@ -198,13 +188,13 @@ export function SlideTechnology({
           </motion.div>
 
           <motion.div
-            className="rounded-xl border border-border bg-card p-5 shadow-sm"
+            className="rounded-xl border border-border bg-card p-4 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.7 }}
           >
-            <h4 className="text-sm font-bold text-card-foreground mb-4">
+            <h3 className="mb-4 text-sm font-bold text-card-foreground">
               Desempeño de Ventas vs Mes Pasado
-            </h4>
+            </h3>
             <img 
               src="/images/descargar (4).png"
               alt="Desempeño de Ventas vs Mes Pasado"

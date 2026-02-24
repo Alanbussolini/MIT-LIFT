@@ -11,7 +11,6 @@ import { SlideOwner } from '@/components/slide-owner'
 import { SlideValuation } from '@/components/slide-valuation'
 import { SlideCredit } from '@/components/slide-credit'
 import { SlideTechnology } from '@/components/slide-technology'
-import { SlideTest } from '@/components/slide-test'
 import { parseCSV } from '@/lib/csv-parser'
 import {
   computeAgeGenderData,
@@ -44,7 +43,7 @@ import {
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
 
-type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'test'
+type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology'
 
 export default function Home() {
   const [csvText, setCsvText] = useState<string | null>(null)
@@ -175,25 +174,9 @@ export default function Home() {
         >
           <SlideTechnology
             wantsGrowthData={wantsGrowth.chartData}
-            noGrowthReasons={noGrowthReasons}
-            digitalLevelData={digitalLevelData}
-            digitalToolsData={digitalToolsData}
             yesPct={wantsGrowth.yesPct}
             salaryByTechLevel={salaryByTechLevel}
             salesByTechLevel={salesByTechLevel}
-            onBack={goBack}
-          />
-        </motion.div>
-      ) : activeView === 'test' ? (
-        <motion.div
-          key="test"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.35 }}
-        >
-          <SlideTest
-            geoPoints={baGeoPoints}
             onBack={goBack}
           />
         </motion.div>
