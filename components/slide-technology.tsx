@@ -30,14 +30,6 @@ const fadeUp = {
 
 const BLUE_COLORS = ['#1a3a5c', '#2F5496', '#4472C4', '#5B8DD9', '#7FAEDE', '#A3C4E6', '#C7DCF0']
 
-const TABLEAU_IMAGES = {
-  razonesNoCrecer: 'https://public.tableau.com/static/images/Li/Libro3_17719395393810/Raznparanocrecer/1.png',
-  nivelTecnologia: 'https://public.tableau.com/static/images/Li/Libro3_17719395393810/Niveldetecnologa/1.png',
-  tecnologiasUtilizadas: 'https://public.tableau.com/static/images/Li/Libro3_17719395393810/Tecnologasmasutilizadas/1.png',
-  sueldoVsTecnologia: 'https://public.tableau.com/static/images/Li/Libro3_17719395393810/Sueldopretendidovs_Niveldetecnologa/1.png',
-  ventasVsLM: 'https://public.tableau.com/static/images/Li/Libro3_17719395393810/Ventasvs_LMyNiveldetecnologa/1.png',
-}
-
 export function SlideTechnology({
   wantsGrowthData,
   noGrowthReasons,
@@ -144,9 +136,9 @@ export function SlideTechnology({
               Razones para no querer crecer
             </h3>
             <img 
-              src={TABLEAU_IMAGES.razonesNoCrecer}
+              src="/images/descargar.png"
               alt="Razones para no querer crecer"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-lg"
             />
           </motion.div>
 
@@ -159,9 +151,9 @@ export function SlideTechnology({
               Nivel de Tecnología
             </h3>
             <img 
-              src={TABLEAU_IMAGES.nivelTecnologia}
+              src="/images/descargar (1).png"
               alt="Nivel de Tecnología"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-lg"
             />
           </motion.div>
 
@@ -174,9 +166,9 @@ export function SlideTechnology({
               Tecnologías más utilizadas
             </h3>
             <img 
-              src={TABLEAU_IMAGES.tecnologiasUtilizadas}
+              src="/images/descargar (2).png"
               alt="Tecnologías más utilizadas"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-lg"
             />
           </motion.div>
         </div>
@@ -199,9 +191,9 @@ export function SlideTechnology({
               Sueldo Pretendido vs Nivel de Tecnología
             </h4>
             <img 
-              src={TABLEAU_IMAGES.sueldoVsTecnologia}
+              src="/images/descargar (3).png"
               alt="Sueldo Pretendido vs Nivel de Tecnología"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-lg"
             />
           </motion.div>
 
@@ -214,9 +206,9 @@ export function SlideTechnology({
               Desempeño de Ventas vs Mes Pasado
             </h4>
             <img 
-              src={TABLEAU_IMAGES.ventasVsLM}
+              src="/images/descargar (4).png"
               alt="Desempeño de Ventas vs Mes Pasado"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-lg"
             />
           </motion.div>
         </div>
