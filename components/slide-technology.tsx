@@ -210,16 +210,15 @@ export function SlideTechnology({
                 <BarChart
                   data={noGrowthReasonsExtended}
                   layout="vertical"
-                  margin={{ top: 5, right: 60, left: 10, bottom: 5 }}
+                  margin={{ top: 5, right: 50, left: 100, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} domain={[0, 60]} />
                   <YAxis
                     dataKey="reason"
                     type="category"
-                    tick={{ fontSize: 9, fill: '#ffffff' }}
-                    width={100}
-                    tickFormatter={(value) => value.length > 18 ? value.substring(0, 18) + '...' : value}
+                    tick={{ fontSize: 10, fill: '#374151' }}
+                    width={95}
                   />
                   <Tooltip
                     contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
@@ -228,7 +227,7 @@ export function SlideTechnology({
                       'Porcentaje'
                     ]}
                   />
-                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]} label={{ position: 'right', fill: '#374151', fontSize: 10 }} />
+                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -265,7 +264,7 @@ export function SlideTechnology({
                       'Cantidad'
                     ]}
                   />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: '#374151', fontSize: 11 }}>
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                     {digitalLevelChartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={BLUE_COLORS[index % BLUE_COLORS.length]} />
                     ))}
@@ -292,16 +291,15 @@ export function SlideTechnology({
                 <BarChart
                   data={digitalToolsExtended}
                   layout="vertical"
-                  margin={{ top: 5, right: 60, left: 10, bottom: 5 }}
+                  margin={{ top: 5, right: 50, left: 80, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} domain={[0, 80]} />
                   <YAxis
                     dataKey="tool"
                     type="category"
-                    tick={{ fontSize: 9, fill: '#374151' }}
-                    width={80}
-                    tickFormatter={(value) => value.length > 12 ? value.substring(0, 12) + '...' : value}
+                    tick={{ fontSize: 10, fill: '#374151' }}
+                    width={75}
                   />
                   <Tooltip
                     contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
@@ -310,7 +308,7 @@ export function SlideTechnology({
                       'Porcentaje'
                     ]}
                   />
-                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]} label={{ position: 'right', fill: '#374151', fontSize: 10 }} />
+                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
