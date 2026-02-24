@@ -1109,6 +1109,27 @@ export function computeTechnologyBusinessAgeRegression(rows: SurveyRow[]): Linea
   }
 }
 
+export interface SalaryByTechLevel {
+  level: string
+  levelNum: number
+  salaries: number[]
+  min: number
+  q1: number
+  median: number
+  q3: number
+  max: number
+  mean: number
+}
+
+export interface SalesByTechLevel {
+  level: string
+  levelNum: number
+  menores: number
+  iguales: number
+  mayores: number
+  total: number
+}
+
 export interface GeoPoint {
   lat: number
   lng: number
@@ -1150,4 +1171,111 @@ export function computeAMBAgeoPoints(rows: SurveyRow[]): GeoPoint[] {
   })
   
   return points
+}
+
+export function computeSalaryByTechLevel(rows: SurveyRow[]): SalaryByTechLevel[] {
+  const levelMap: Record<string, number> = {
+    'Ninguno': 0,
+    'Bajo': 1,
+    'Básico': 1,
+    'Medio': 2,
+    'Alto': 3,
+  }
+  
+  const levelNames = ['Ninguno', 'Básico', 'Medio', 'Alto']
+  const salariesByLevel: Record<number, number[]> = { 0: [], 1: [], 2: [], 3: [] }
+  
+  rows.forEach(row => {
+    if (row.expectedSalary && row.digitalLevel) {
+      const salary = parseExpectedSalary(row.expectedSalary)
+      const levelNum = levelMap[row.digitalLevel]
+      
+      if (salary && salary > 0 && levelNum !== undefined && levelNum >= 0) {
+        salariesByLevel[levelNum].push(salary)
+      }
+    }
+  })
+  
+  return levelNames.map((level, idx) => {
+    const salaries = salariesByLevel[idx].sort((a, b) => a - b)
+    if (salaries.length === 0) {
+      return {
+        level,
+        levelNum: idx,
+        salaries: [],
+        min: 0,
+        q1: 0,
+        median: 0,
+        q3: 0,
+        max: 0,
+        mean: 0,
+      }
+    }
+    
+    const min = salaries[0]
+    const max = salaries[salaries.length - 1]
+    const mean = salaries.reduce((a, b) => a + b, 0) / salaries.length
+    const median = getPercentile(salaries, 50)
+    const q1 = getPercentile(salaries, 25)
+    const q3 = getPercentile(salaries, 75)
+    
+    return { level, levelNum: idx, salaries, min, q1, median, q3, max, mean }
+  })
+}
+
+export function computeSalesByTechLevel(rows: SurveyRow[]): SalesByTechLevel[] {
+  const levelMap: Record<string, number> = {
+    'Ninguno': 0,
+    'Bajo': 1,
+    'Básico': 1,
+    'Medio': 2,
+    'Alto': 3,
+  }
+  
+  const levelNames = ['Ninguno', 'Básico', 'Medio', 'Alto']
+  const salesByLevel: Record<number, { menores: number; iguales: number; mayores: number }> = {
+    0: { menores: 0, iguales: 0, mayores: 0 },
+    1: { menores: 0, iguales: 0, mayores: 0 },
+    2: { menores: 0, iguales: 0, mayores: 0 },
+    3: { menores: 0, iguales: 0, mayores: 0 },
+  }
+  
+  rows.forEach(row => {
+    if (row.salesComparison && row.digitalLevel) {
+      const levelNum = levelMap[row.digitalLevel]
+      const comparison = row.salesComparison.toLowerCase()
+      
+      if (levelNum !== undefined && levelNum >= 0) {
+        if (comparison.includes('menor')) {
+          salesByLevel[levelNum].menores++
+        } else if (comparison.includes('mayor')) {
+          salesByLevel[levelNum].mayores++
+        } else {
+          salesByLevel[levelNum].iguales++
+        }
+      }
+    }
+  })
+  
+  return levelNames.map((level, idx) => {
+    const data = salesByLevel[idx]
+    const total = data.menores + data.iguales + data.mayores
+    return {
+      level,
+      levelNum: idx,
+      menores: total > 0 ? parseFloat(((data.menores / total) * 100).toFixed(1)) : 0,
+      iguales: total > 0 ? parseFloat(((data.iguales / total) * 100).toFixed(1)) : 0,
+      mayores: total > 0 ? parseFloat(((data.mayores / total) * 100).toFixed(1)) : 0,
+      total,
+    }
+  })
+}
+
+function getPercentile(sortedArr: number[], p: number): number {
+  if (sortedArr.length === 0) return 0
+  const index = (p / 100) * (sortedArr.length - 1)
+  const lower = Math.floor(index)
+  const upper = Math.ceil(index)
+  if (lower === upper) return sortedArr[lower]
+  return sortedArr[lower] + (sortedArr[upper] - sortedArr[lower]) * (index - lower)
 }

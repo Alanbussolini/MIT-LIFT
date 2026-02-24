@@ -11,8 +11,6 @@ import { SlideOwner } from '@/components/slide-owner'
 import { SlideValuation } from '@/components/slide-valuation'
 import { SlideCredit } from '@/components/slide-credit'
 import { SlideTechnology } from '@/components/slide-technology'
-import { SlideRegression } from '@/components/slide-regression'
-import { SlideSalaryRegression } from '@/components/slide-salary-regression'
 import { parseCSV } from '@/lib/csv-parser'
 import {
   computeAgeGenderData,
@@ -36,17 +34,15 @@ import {
   computeNoGrowthReasons,
   computeDigitalLevelDistribution,
   computeDigitalTools,
-  computeCreditSalesExpectationRegression,
-  computeTechnologySalesExpectationRegression,
-  computeTechnologySalaryRegression,
-  computeTechnologyBusinessAgeRegression,
+  computeSalaryByTechLevel,
+  computeSalesByTechLevel,
   computeMostFrequentBusinessType,
   computeAMBAgeoPoints,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
 
-type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'regression' | 'salaryRegression'
+type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology'
 
 export default function Home() {
   const [csvText, setCsvText] = useState<string | null>(null)
@@ -76,11 +72,8 @@ export default function Home() {
   const noGrowthReasons = computeNoGrowthReasons(rows)
   const digitalLevelData = computeDigitalLevelDistribution(rows)
   const digitalToolsData = computeDigitalTools(rows)
-  const creditRegression = computeCreditSalesExpectationRegression(rows)
-  const technologyRegression = computeTechnologySalesExpectationRegression(rows)
-  const salaryRegression = computeTechnologySalaryRegression(rows)
-  const techBusinessAgeRegression = computeTechnologyBusinessAgeRegression(rows)
-  const techSalaryRegression = computeTechnologySalaryRegression(rows)
+  const salaryByTechLevel = computeSalaryByTechLevel(rows)
+  const salesByTechLevel = computeSalesByTechLevel(rows)
   const mostFrequentBusinessType = computeMostFrequentBusinessType(rows)
   const geoPoints = computeAMBAgeoPoints(rows)
 
@@ -183,35 +176,8 @@ export default function Home() {
             digitalLevelData={digitalLevelData}
             digitalToolsData={digitalToolsData}
             yesPct={wantsGrowth.yesPct}
-            techBusinessAgeRegression={techBusinessAgeRegression}
-            techSalaryRegression={techSalaryRegression}
-            onBack={goBack}
-          />
-        </motion.div>
-      ) : activeView === 'regression' ? (
-        <motion.div
-          key="regression"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.35 }}
-        >
-          <SlideRegression
-            creditRegression={creditRegression}
-            technologyRegression={technologyRegression}
-            onBack={goBack}
-          />
-        </motion.div>
-      ) : activeView === 'salaryRegression' ? (
-        <motion.div
-          key="salaryRegression"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.35 }}
-        >
-          <SlideSalaryRegression
-            salaryRegression={salaryRegression}
+            salaryByTechLevel={salaryByTechLevel}
+            salesByTechLevel={salesByTechLevel}
             onBack={goBack}
           />
         </motion.div>

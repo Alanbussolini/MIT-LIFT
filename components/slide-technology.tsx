@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowLeft, TrendingUp } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   PieChart,
@@ -15,17 +15,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-  ScatterChart,
-  Scatter,
-  Line,
-  ComposedChart,
 } from 'recharts'
 import type {
   WantsGrowthData,
   NoGrowthReasonData,
   DigitalLevelData,
   DigitalToolsData,
-  LinearRegressionResult,
+  SalaryByTechLevel,
+  SalesByTechLevel,
 } from '@/lib/csv-parser'
 
 interface SlideTechnologyProps {
@@ -34,8 +31,8 @@ interface SlideTechnologyProps {
   digitalLevelData: DigitalLevelData[]
   digitalToolsData: DigitalToolsData[]
   yesPct: number
-  techBusinessAgeRegression: LinearRegressionResult
-  techSalaryRegression: LinearRegressionResult
+  salaryByTechLevel: SalaryByTechLevel[]
+  salesByTechLevel: SalesByTechLevel[]
   onBack: () => void
 }
 
@@ -44,10 +41,18 @@ const fadeUp = {
   animate: { opacity: 1, y: 0 },
 }
 
-const COLORS = ['#1a3a5c', '#ED7D31', '#4472C4', '#A5A5A5', '#FFC000', '#5B9BD5', '#70AD47', '#9E480E']
+const BLUE_COLORS = ['#1a3a5c', '#2F5496', '#4472C4', '#5B8DD9', '#7FAEDE', '#A3C4E6', '#C7DCF0']
+const TECH_COLORS = {
+  ninguno: '#1a3a5c',
+  basico: '#4472C4',
+  medio: '#ED7D31',
+  alto: '#9E480E',
+}
 
-function addJitter(value: number, intensity: number = 0.1): number {
-  return value + (Math.random() - 0.5) * intensity * 2
+const SALES_COLORS = {
+  menores: '#1a3a5c',
+  iguales: '#4472C4',
+  mayores: '#ED7D31',
 }
 
 export function SlideTechnology({
@@ -56,53 +61,37 @@ export function SlideTechnology({
   digitalLevelData,
   digitalToolsData,
   yesPct,
-  techBusinessAgeRegression,
-  techSalaryRegression,
+  salaryByTechLevel,
+  salesByTechLevel,
   onBack,
 }: SlideTechnologyProps) {
   const safeWantsGrowthData = wantsGrowthData || []
   const safeNoGrowthReasons = noGrowthReasons || []
   const safeDigitalLevelData = digitalLevelData || []
   const safeDigitalToolsData = digitalToolsData || []
+  const safeSalaryByTechLevel = salaryByTechLevel || []
+  const safeSalesByTechLevel = salesByTechLevel || []
   
-  const topDigitalLevel = safeDigitalLevelData.length > 0 ? safeDigitalLevelData[0] : null
   const topTool = safeDigitalToolsData.length > 0 ? safeDigitalToolsData[0] : null
 
-  const noGrowthReasonsExtended = safeNoGrowthReasons.slice(0, 5).map(r => ({
+  const noGrowthReasonsExtended = safeNoGrowthReasons.slice(0, 4).map((r, idx) => ({
     ...r,
     reason: r.reason || '',
+    fill: BLUE_COLORS[idx % BLUE_COLORS.length],
   }))
 
-  const digitalToolsExtended = safeDigitalToolsData.slice(0, 6).map(t => ({
+  const digitalToolsExtended = safeDigitalToolsData.slice(0, 7).map((t, idx) => ({
     ...t,
     tool: t.tool || '',
+    fill: BLUE_COLORS[idx % BLUE_COLORS.length],
   }))
 
-  const businessAgeChartData = techBusinessAgeRegression.scatterData.map((point, idx) => ({
-    x: addJitter(point.x, 0.15),
-    y: point.y,
-    originalX: point.x,
-    id: idx,
+  const salesChartData = safeSalesByTechLevel.map(d => ({
+    level: d.level,
+    'Menores (%)': d.menores,
+    'Iguales (%)': d.iguales,
+    'Mayores (%)': d.mayores,
   }))
-
-  const businessAgeLineData = techBusinessAgeRegression.regressionLine.map(point => ({
-    x: point.x,
-    y: point.y,
-  }))
-
-  const salaryChartData = techSalaryRegression.scatterData.map((point, idx) => ({
-    x: addJitter(point.x, 0.15),
-    y: point.y,
-    originalX: point.x,
-    id: idx,
-  }))
-
-  const salaryLineData = techSalaryRegression.regressionLine.map(point => ({
-    x: point.x,
-    y: point.y,
-  }))
-
-  const salaryYValues = techSalaryRegression.scatterData.map(p => p.y)
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -128,12 +117,12 @@ export function SlideTechnology({
             <span className="text-primary">Tecnología</span>
           </h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-xl mx-auto">
-            Growth willingness, barriers, and technology adoption in nanostores
+            Growth willingness, barriers, technology adoption, salary and sales analysis
           </p>
         </motion.div>
 
         <motion.div
-          className="mb-10 flex flex-col gap-4 sm:flex-row"
+          className="mb-8 flex flex-col gap-4 sm:flex-row"
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
@@ -145,16 +134,6 @@ export function SlideTechnology({
               Quiere que su negocio crezca
             </span>
           </div>
-          {topDigitalLevel && (
-            <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
-              <span className="text-4xl font-black tracking-tight text-accent sm:text-5xl">
-                {topDigitalLevel.percentage}%
-              </span>
-              <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-                {topDigitalLevel.level}
-              </span>
-            </div>
-          )}
           {topTool && (
             <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
               <span className="text-xl font-black tracking-tight text-foreground sm:text-2xl text-center">
@@ -176,19 +155,19 @@ export function SlideTechnology({
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
               ¿Quiere que su negocio crezca?
             </h3>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
                   data={safeWantsGrowthData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={70}
-                  outerRadius={100}
+                  innerRadius={60}
+                  outerRadius={90}
                   paddingAngle={5}
                   dataKey="value"
                 >
                   {safeWantsGrowthData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={BLUE_COLORS[index % BLUE_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -214,33 +193,37 @@ export function SlideTechnology({
               Razones para no querer crecer
             </h3>
             {noGrowthReasonsExtended.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                   data={noGrowthReasonsExtended}
                   layout="vertical"
-                  margin={{ top: 5, right: 40, left: 10, bottom: 5 }}
+                  margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} domain={[0, 50]} />
                   <YAxis
                     dataKey="reason"
                     type="category"
                     tick={{ fontSize: 9, fill: '#374151' }}
-                    width={220}
-                    tickFormatter={(value) => value.length > 35 ? value.substring(0, 35) + '...' : value}
+                    width={100}
+                    tickFormatter={(value) => value.length > 18 ? value.substring(0, 18) + '...' : value}
                   />
                   <Tooltip
                     contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
-                      `${value} (${props.payload.percentage || 0}%)`,
-                      'Cantidad'
+                      `${props.payload.percentage || 0}%`,
+                      'Porcentaje'
                     ]}
                   />
-                  <Bar dataKey="count" fill="#ED7D31" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
+                    {noGrowthReasonsExtended.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+              <div className="flex items-center justify-center h-[250px] text-muted-foreground">
                 No hay datos disponibles
               </div>
             )}
@@ -255,36 +238,36 @@ export function SlideTechnology({
               Nivel de Tecnología
             </h3>
             {safeDigitalLevelData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                   data={safeDigitalLevelData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis
                     dataKey="level"
                     tick={{ fontSize: 10, fill: '#374151' }}
-                    angle={-30}
+                    angle={-20}
                     textAnchor="end"
-                    height={70}
+                    height={50}
                   />
-                  <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} />
+                  <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} domain={[0, 50]} />
                   <Tooltip
                     contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
-                      `${value} (${props.payload.percentage || 0}%)`,
-                      'Cantidad'
+                      `${props.payload.percentage || 0}%`,
+                      'Porcentaje'
                     ]}
                   />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="percentage" radius={[4, 4, 0, 0]}>
                     {safeDigitalLevelData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={BLUE_COLORS[index % BLUE_COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+              <div className="flex items-center justify-center h-[250px] text-muted-foreground">
                 No hay datos disponibles
               </div>
             )}
@@ -299,33 +282,37 @@ export function SlideTechnology({
               Tecnologías más utilizadas
             </h3>
             {digitalToolsExtended.length > 0 ? (
-              <ResponsiveContainer width="100%" height={280}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                   data={digitalToolsExtended}
                   layout="vertical"
-                  margin={{ top: 5, right: 40, left: 10, bottom: 5 }}
+                  margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: '#6b7280' }} domain={[0, 80]} />
                   <YAxis
                     dataKey="tool"
                     type="category"
                     tick={{ fontSize: 9, fill: '#374151' }}
-                    width={180}
-                    tickFormatter={(value) => value.length > 30 ? value.substring(0, 30) + '...' : value}
+                    width={90}
+                    tickFormatter={(value) => value.length > 15 ? value.substring(0, 15) + '...' : value}
                   />
                   <Tooltip
                     contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
                     formatter={(value: number, name: string, props: any) => [
-                      `${value} (${props.payload.percentage || 0}%)`,
-                      'Cantidad'
+                      `${props.payload.percentage || 0}%`,
+                      'Porcentaje'
                     ]}
                   />
-                  <Bar dataKey="count" fill="#4472C4" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
+                    {digitalToolsExtended.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+              <div className="flex items-center justify-center h-[250px] text-muted-foreground">
                 No hay datos disponibles
               </div>
             )}
@@ -333,89 +320,58 @@ export function SlideTechnology({
         </div>
 
         <motion.div
-          className="mb-6"
+          className="mb-8"
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.55 }}
         >
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-bold text-foreground">Análisis de Correlación</h3>
-          </div>
-          <p className="text-sm text-muted-foreground mb-6">
-            Explorando si la adopción de tecnología se correlaciona con la supervivencia del negocio y la valoración del dueño
-          </p>
-          <p className="text-xs text-muted-foreground mb-6">
-            <strong>Nivel de Tecnología codificado:</strong> Ninguno=0, Bajo/Básico=1, Medio=2, Alto=3
-          </p>
+          <h3 className="mb-6 text-lg font-bold text-foreground">Análisis por Nivel de Tecnología</h3>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-bold text-card-foreground">
-                Nivel de Tecnología vs Edad del Negocio
-              </h4>
-              <span className={`text-xs px-2 py-1 rounded ${techBusinessAgeRegression.hasCorrelation ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                r = {techBusinessAgeRegression.correlation.toFixed(3)}
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              ¿Mayor tecnología = Mayor supervivencia? (n={techBusinessAgeRegression.n})
-            </p>
-            {techBusinessAgeRegression.n > 0 ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <ComposedChart data={businessAgeChartData} margin={{ top: 10, right: 20, left: 10, bottom: 30 }}>
+            <h4 className="text-sm font-bold text-card-foreground mb-4">
+              Sueldo Pretendido vs Nivel de Tecnología
+            </h4>
+            {safeSalaryByTechLevel.some(d => d.salaries.length > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={safeSalaryByTechLevel.filter(d => d.salaries.length > 0)}
+                  margin={{ top: 20, right: 30, left: 60, bottom: 20 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis
-                    type="number"
-                    dataKey="x"
-                    tick={{ fontSize: 10, fill: '#6b7280' }}
-                    domain={[-0.5, 3.5]}
-                    ticks={[0, 1, 2, 3]}
-                    tickFormatter={(v) => {
-                      const labels = ['Ninguno', 'Bajo', 'Medio', 'Alto']
-                      return labels[v] || v
-                    }}
+                    dataKey="level"
+                    tick={{ fontSize: 11, fill: '#374151' }}
                   />
                   <YAxis
-                    type="number"
-                    dataKey="y"
                     tick={{ fontSize: 10, fill: '#6b7280' }}
-                    label={{ value: 'Edad (años)', angle: -90, position: 'insideLeft', style: { fontSize: 9, fill: '#9ca3af' } }}
+                    tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
                   />
                   <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
-                    formatter={(value: number, name: string) => [name === 'y' ? `${value} años` : value.toFixed(1), name === 'y' ? 'Edad' : 'Tech Level']}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                    formatter={(value: number, name: string) => [`$${value.toLocaleString('es-MX')}`, name]}
+                    labelFormatter={(label) => `Nivel: ${label}`}
                   />
-                  <Scatter data={businessAgeChartData} fill="#1a3a5c" fillOpacity={0.5} />
-                  {businessAgeLineData.length === 2 && (
-                    <Line
-                      type="linear"
-                      data={businessAgeLineData}
-                      dataKey="y"
-                      stroke="#ED7D31"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  )}
-                </ComposedChart>
+                  <Bar dataKey="mean" name="Sueldo Promedio" fill="#1a3a5c" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="median" name="Mediana" fill="#4472C4" radius={[4, 4, 0, 0]} />
+                  <Legend />
+                </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[250px] text-muted-foreground text-sm">
-                No hay datos con niveles de tecnología válidos para el análisis
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                No hay datos disponibles
               </div>
             )}
-            <div className="mt-3 p-2 rounded bg-muted/50">
-              <p className="text-[10px] text-muted-foreground">
-                {techBusinessAgeRegression.hasCorrelation 
-                  ? `✓ Correlación ${techBusinessAgeRegression.correlation > 0 ? 'positiva' : 'negativa'} (p=${techBusinessAgeRegression.pValue.toFixed(4)})`
-                  : `✗ Sin correlación significativa (p=${techBusinessAgeRegression.pValue.toFixed(4)})`
-                }
-              </p>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+              {safeSalaryByTechLevel.filter(d => d.salaries.length > 0).map(d => (
+                <div key={d.level} className="p-2 rounded bg-muted/50">
+                  <span className="font-semibold">{d.level}:</span> n={d.salaries.length}
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -424,74 +380,52 @@ export function SlideTechnology({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.7 }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-bold text-card-foreground">
-                Nivel de Tecnología vs Sueldo Pretendido
-              </h4>
-              <span className={`text-xs px-2 py-1 rounded ${techSalaryRegression.hasCorrelation ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                r = {techSalaryRegression.correlation.toFixed(3)}
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground mb-3">
-              ¿Mayor tecnología = Mayor valoración del dueño? (n={techSalaryRegression.n})
-            </p>
-            {techSalaryRegression.n > 0 && salaryYValues.length > 0 ? (
-              <ResponsiveContainer width="100%" height={250}>
-                <ComposedChart data={salaryChartData} margin={{ top: 10, right: 20, left: 60, bottom: 30 }}>
+            <h4 className="text-sm font-bold text-card-foreground mb-4">
+              Desempeño de Ventas vs Mes Pasado
+            </h4>
+            {safeSalesByTechLevel.length > 0 && safeSalesByTechLevel.some(d => d.total > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={salesChartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis
-                    type="number"
-                    dataKey="x"
-                    tick={{ fontSize: 10, fill: '#6b7280' }}
-                    domain={[-0.5, 3.5]}
-                    ticks={[0, 1, 2, 3]}
-                    tickFormatter={(v) => {
-                      const labels = ['Ninguno', 'Bajo', 'Medio', 'Alto']
-                      return labels[v] || v
-                    }}
+                    dataKey="level"
+                    tick={{ fontSize: 11, fill: '#374151' }}
                   />
                   <YAxis
-                    type="number"
-                    dataKey="y"
                     tick={{ fontSize: 10, fill: '#6b7280' }}
-                    tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
-                    domain={[0, Math.max(...salaryYValues) * 1.1]}
+                    domain={[0, 100]}
+                    tickFormatter={(v) => `${v}%`}
                   />
                   <Tooltip
-                    contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
-                    formatter={(value: number, name: string) => [name === 'y' ? `$${value.toLocaleString()}` : value.toFixed(1), name === 'y' ? 'Sueldo' : 'Tech Level']}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                    formatter={(value: number, name: string) => [`${value}%`, name.replace('(%)', '')]}
                   />
-                  <Scatter data={salaryChartData} fill="#4472C4" fillOpacity={0.5} />
-                  {salaryLineData.length === 2 && (
-                    <Line
-                      type="linear"
-                      data={salaryLineData}
-                      dataKey="y"
-                      stroke="#ED7D31"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  )}
-                </ComposedChart>
+                  <Legend />
+                  <Bar dataKey="Menores (%)" fill={SALES_COLORS.menores} radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Iguales (%)" fill={SALES_COLORS.iguales} radius={[2, 2, 0, 0]} />
+                  <Bar dataKey="Mayores (%)" fill={SALES_COLORS.mayores} radius={[2, 2, 0, 0]} />
+                </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex items-center justify-center h-[250px] text-muted-foreground text-sm">
-                No hay datos con niveles de tecnología válidos para el análisis
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                No hay datos disponibles
               </div>
             )}
-            <div className="mt-3 p-2 rounded bg-muted/50">
-              <p className="text-[10px] text-muted-foreground">
-                {techSalaryRegression.hasCorrelation 
-                  ? `✓ Correlación ${techSalaryRegression.correlation > 0 ? 'positiva' : 'negativa'} (p=${techSalaryRegression.pValue.toFixed(4)})`
-                  : `✗ Sin correlación significativa (p=${techSalaryRegression.pValue.toFixed(4)})`
-                }
-              </p>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+              {safeSalesByTechLevel.filter(d => d.total > 0).map(d => (
+                <div key={d.level} className="p-2 rounded bg-muted/50">
+                  <span className="font-semibold">{d.level}:</span> n={d.total}
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
       </div>
 
-      <SlideFooter page={7} />
+      <SlideFooter page={6} />
     </section>
   )
 }
@@ -502,7 +436,7 @@ function SlideFooter({ page }: { page: number }) {
       <a href="https://liftlab.mit.edu" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
         liftlab.mit.edu
       </a>
-      <span className="opacity-70">Card 0{page - 1}</span>
+      <span className="opacity-70">Card {page.toString().padStart(2, '0')}</span>
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold tracking-tight">MIT</span>
         <div className="flex flex-col leading-none">
