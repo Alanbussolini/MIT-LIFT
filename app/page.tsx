@@ -40,6 +40,7 @@ import {
   computeMostFrequentBusinessType,
   computeAMBAgeoPoints,
   computeBuenosAiresMapPoints,
+  computeTechSummary,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
@@ -79,6 +80,7 @@ export default function Home() {
   const mostFrequentBusinessType = computeMostFrequentBusinessType(rows)
   const geoPoints = computeAMBAgeoPoints(rows)
   const baGeoPoints = computeBuenosAiresMapPoints(rows)
+  const techSummary = computeTechSummary(rows)
 
   const goBack = () => setActiveView(null)
 
@@ -177,6 +179,8 @@ export default function Home() {
             yesPct={wantsGrowth.yesPct}
             salaryByTechLevel={salaryByTechLevel}
             salesByTechLevel={salesByTechLevel}
+            techSummary={techSummary}
+            noGrowthReasonsData={noGrowthReasons}
             onBack={goBack}
           />
         </motion.div>

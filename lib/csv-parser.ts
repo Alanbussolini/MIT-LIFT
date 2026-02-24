@@ -1134,6 +1134,97 @@ export interface SalesByTechLevel {
   total: number
 }
 
+export interface TechSummary {
+  averageLevel: number
+  averageLevelLabel: string
+  moderatePct: number
+  mainTechnologies: { name: string; percentage: number }[]
+  electronicPaymentsPct: number
+  messagingAppsPct: number
+}
+
+export function computeTechSummary(rows: SurveyRow[]): TechSummary {
+  const levelMap: Record<string, number> = {
+    'Ninguno': 0,
+    'Bajo': 1,
+    'Básico': 1,
+    'Medio': 2,
+    'Alto': 3,
+  }
+  
+  const levelNames = ['Ninguno', 'Básico', 'Medio', 'Alto']
+  const levelCounts: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0 }
+  
+  let totalWithLevel = 0
+  
+  rows.forEach(row => {
+    if (row.digitalLevel) {
+      const levelNum = levelMap[row.digitalLevel]
+      if (levelNum !== undefined) {
+        levelCounts[levelNum]++
+        totalWithLevel++
+      }
+    }
+  })
+  
+  const moderatePct = totalWithLevel > 0 ? parseFloat(((levelCounts[2] / totalWithLevel) * 100).toFixed(1)) : 0
+  
+  let sumLevel = 0
+  Object.entries(levelCounts).forEach(([level, count]) => {
+    sumLevel += parseInt(level) * count
+  })
+  const averageLevel = totalWithLevel > 0 ? sumLevel / totalWithLevel : 0
+  const averageLevelLabel = levelNames[Math.round(averageLevel)] || 'N/A'
+  
+  const toolCounts: Record<string, number> = {}
+  let totalWithTools = 0
+  
+  rows.forEach(row => {
+    if (row.digitalTools && row.digitalTools !== '' && row.digitalTools !== '-') {
+      const tools = row.digitalTools.split(',').map(t => t.trim()).filter(t => t)
+      tools.forEach(tool => {
+        toolCounts[tool] = (toolCounts[tool] || 0) + 1
+      })
+      totalWithTools++
+    }
+  })
+  
+  const toolPercentages = Object.entries(toolCounts)
+    .map(([tool, count]) => ({
+      name: tool,
+      percentage: totalWithTools > 0 ? parseFloat(((count / totalWithTools) * 100).toFixed(1)) : 0,
+    }))
+    .sort((a, b) => b.percentage - a.percentage)
+  
+  const electronicKeywords = ['pago', 'transferencia', 'mercadopago', 'qr', 'pos', 'débito', 'crédito', 'tarjeta']
+  const messagingKeywords = ['whatsapp', 'mensaje', 'teléfono', 'celular', 'llamada', 'telegram', 'signal']
+  
+  let electronicPayments = 0
+  let messagingApps = 0
+  
+  Object.entries(toolCounts).forEach(([tool, count]) => {
+    const toolLower = tool.toLowerCase()
+    if (electronicKeywords.some(k => toolLower.includes(k))) {
+      electronicPayments += count
+    }
+    if (messagingKeywords.some(k => toolLower.includes(k))) {
+      messagingApps += count
+    }
+  })
+  
+  const electronicPaymentsPct = totalWithTools > 0 ? parseFloat(((electronicPayments / totalWithTools) * 100).toFixed(1)) : 0
+  const messagingAppsPct = totalWithTools > 0 ? parseFloat(((messagingApps / totalWithTools) * 100).toFixed(1)) : 0
+  
+  return {
+    averageLevel,
+    averageLevelLabel,
+    moderatePct,
+    mainTechnologies: toolPercentages.slice(0, 5),
+    electronicPaymentsPct,
+    messagingAppsPct,
+  }
+}
+
 export interface GeoPoint {
   lat: number
   lng: number
