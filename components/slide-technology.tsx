@@ -41,6 +41,53 @@ export function SlideTechnology({
           </h2>
         </motion.div>
 
+        <motion.div
+          className="mb-8 flex flex-col gap-4 sm:flex-row"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/20 bg-card p-6 shadow-sm">
+            <span className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
+              78,64%
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              quiere que su negocio crezca
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
+            <span className="text-3xl font-black tracking-tight text-accent sm:text-4xl">
+              Está satisfecho con su negocio
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Razón 1
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
+            <span className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
+              Porque sería muy complicado administrarlo
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Razón 2
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/30 bg-card p-6 shadow-sm">
+            <span className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
+              58,68%
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              tiene un nivel de tecnología moderado
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/30 bg-card p-6 shadow-sm">
+            <span className="text-xl font-black tracking-tight text-accent sm:text-2xl">
+              Pagos electrónicos y Apps de mensajería
+            </span>
+            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
+              Tecnologías más adoptadas
+            </span>
+          </div>
+        </motion.div>
+
         <div className="space-y-6">
           <motion.div
             className="rounded-xl border border-border bg-card p-4 shadow-sm"
