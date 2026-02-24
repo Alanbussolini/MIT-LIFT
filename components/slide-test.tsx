@@ -3,26 +3,34 @@
 import { motion } from 'framer-motion'
 import { ArrowLeft, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts'
+import dynamic from 'next/dynamic'
 import type { GeoPoint } from '@/lib/csv-parser'
-
-interface SlideTestProps {
-  geoPoints: GeoPoint[]
-  onBack: () => void
-}
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
+}
+
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+)
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+)
+const Marker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Marker),
+  { ssr: false }
+)
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+)
+
+interface SlideTestProps {
+  geoPoints: GeoPoint[]
+  onBack: () => void
 }
 
 const PRIMARY = '#1a3a5c'
@@ -34,20 +42,15 @@ export function SlideTest({
 }: SlideTestProps) {
   const safeGeoPoints = geoPoints || []
   
-  const chartData = safeGeoPoints.map((point, idx) => ({
-    x: point.lng,
-    y: point.lat,
-    name: point.businessName || point.businessType,
-    type: point.businessType,
-    id: idx,
-  }))
-
   const businessTypes = [...new Set(safeGeoPoints.map(p => p.businessType))]
-  const typeColors: Record<string, string> = {}
-  businessTypes.forEach((type, idx) => {
-    const colors = [PRIMARY, ACCENT, '#4472C4', '#70AD47', '#FFC000', '#5B9BD5']
-    typeColors[type] = colors[idx % colors.length]
-  })
+  
+  const centerLat = safeGeoPoints.length > 0 
+    ? safeGeoPoints.reduce((sum, p) => sum + p.lat, 0) / safeGeoPoints.length
+    : -34.6
+  
+  const centerLng = safeGeoPoints.length > 0 
+    ? safeGeoPoints.reduce((sum, p) => sum + p.lng, 0) / safeGeoPoints.length
+    : -58.4
 
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
@@ -101,52 +104,44 @@ export function SlideTest({
         </motion.div>
 
         <motion.div
-          className="rounded-xl border border-border bg-card p-6 shadow-sm"
+          className="rounded-xl border border-border bg-card p-4 shadow-sm overflow-hidden"
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="mb-4 text-sm font-bold text-card-foreground">
-            Ubicación de Nanostores
+            Ubicación de Nanostores - Buenos Aires
           </h3>
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={500}>
-              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis
-                  type="number"
-                  dataKey="x"
-                  name="Longitud"
-                  domain={[-59.1, -58.0]}
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  label={{ value: 'Longitud', position: 'bottom', style: { fontSize: 11, fill: '#9ca3af' } }}
+          <div className="h-[500px] rounded-lg overflow-hidden">
+            {safeGeoPoints.length > 0 ? (
+              <MapContainer
+                center={[centerLat, centerLng]}
+                zoom={11}
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <YAxis
-                  type="number"
-                  dataKey="y"
-                  name="Latitud"
-                  domain={[-35.0, -34.3]}
-                  tick={{ fontSize: 10, fill: '#6b7280' }}
-                  label={{ value: 'Latitud', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: '#9ca3af' } }}
-                />
-                <Tooltip
-                  cursor={{ strokeDasharray: '3 3' }}
-                  contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
-                />
-                <Scatter name="Nanostores" data={chartData}>
-                  {chartData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={typeColors[entry.type] || PRIMARY} 
-                    />
-                  ))}
-                </Scatter>
-              </ScatterChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex items-center justify-center h-[500px] text-muted-foreground">
-              No hay datos de coordenadas disponibles
-            </div>
-          )}
+                {safeGeoPoints.map((point, idx) => (
+                  <Marker key={idx} position={[point.lat, point.lng]}>
+                    <Popup>
+                      <div className="text-sm">
+                        <p className="font-semibold">{point.businessName || point.businessType}</p>
+                        <p className="text-xs text-gray-500">{point.businessType}</p>
+                        <p className="text-xs text-gray-400">
+                          Lat: {point.lat.toFixed(4)}, Lng: {point.lng.toFixed(4)}
+                        </p>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                No hay datos de coordenadas disponibles
+              </div>
+            )}
+          </div>
         </motion.div>
 
         {businessTypes.length > 0 && (
@@ -157,15 +152,18 @@ export function SlideTest({
           >
             <h4 className="text-xs font-bold text-card-foreground mb-3">Leyenda - Tipos de Negocio</h4>
             <div className="flex flex-wrap gap-3">
-              {businessTypes.map((type) => (
-                <div key={type} className="flex items-center gap-2">
-                  <div 
-                    className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: typeColors[type] || PRIMARY }}
-                  />
-                  <span className="text-xs text-muted-foreground">{type}</span>
-                </div>
-              ))}
+              {businessTypes.map((type, idx) => {
+                const colors = [PRIMARY, ACCENT, '#4472C4', '#70AD47', '#FFC000', '#5B9BD5']
+                return (
+                  <div key={type} className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: colors[idx % colors.length] }}
+                    />
+                    <span className="text-xs text-muted-foreground">{type}</span>
+                  </div>
+                )
+              })}
             </div>
           </motion.div>
         )}

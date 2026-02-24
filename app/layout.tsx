@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, Source_Sans_3 } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import 'leaflet/dist/leaflet.css'
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const sourceSans = Source_Sans_3({ subsets: ["latin"], variable: "--font-source-sans" });
