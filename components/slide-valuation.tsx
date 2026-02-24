@@ -15,7 +15,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Label,
 } from 'recharts'
 import type { WillingnessData, SalaryRangeData } from '@/lib/csv-parser'
 
@@ -39,16 +38,6 @@ function formatCurrency(value: number): string {
   return value.toLocaleString('es-AR')
 }
 
-function formatCurrencyShort(value: number): string {
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(1)}M`
-  }
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(0)}K`
-  }
-  return `$${value}`
-}
-
 export function SlideValuation({
   willingPct,
   notWillingPct,
@@ -59,7 +48,6 @@ export function SlideValuation({
 }: SlideValuationProps) {
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
-      {/* Back button */}
       <div className="fixed left-4 top-4 z-50">
         <Button
           variant="outline"
@@ -68,23 +56,21 @@ export function SlideValuation({
           className="gap-2 border-border bg-card/95 shadow-md backdrop-blur-sm text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Roadmap
+          Volver al Mapa
         </Button>
       </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pt-20 pb-8">
-        {/* Header */}
         <motion.div className="mb-8 text-center" {...fadeUp} transition={{ duration: 0.5 }}>
           <span className="mb-3 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
-            04 - Valuation
+            04 - Valuación
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {'Nanostore '}
-            <span className="text-primary">Valuation</span>
+            {'Valuación del '}
+            <span className="text-primary">Nanostore</span>
           </h2>
         </motion.div>
 
-        {/* Angry Numbers Summary */}
         <motion.div
           className="mb-10 flex flex-col gap-4 sm:flex-row"
           {...fadeUp}
@@ -95,7 +81,7 @@ export function SlideValuation({
               {willingPct}%
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Willing to Exit
+              Dispuesto a vender
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
@@ -103,7 +89,7 @@ export function SlideValuation({
               {notWillingPct}%
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Not Willing
+              No disposto
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
@@ -111,75 +97,67 @@ export function SlideValuation({
               ${avgSalary.toLocaleString('es-AR')}
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              {'Avg. Monthly Salary (ARS)'}
+              Salario mensual promedio (ARS)
             </span>
           </div>
         </motion.div>
 
-        {/* Data Transformation Section */}
         <motion.div
           className="mb-10 rounded-xl border border-border bg-card p-6 shadow-sm"
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="mb-5 text-sm font-bold text-card-foreground">
-            Data Standardization via Gemini AI
+            Estandarización de Datos via Gemini AI
           </h3>
 
-          {/* Before / After images */}
           <div className="mb-6 flex flex-col items-center gap-4 md:flex-row md:gap-6">
-            {/* Before */}
             <div className="flex flex-1 flex-col items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                Antes (Raw Data)
+                Antes (Datos crudos)
               </span>
               <div className="overflow-hidden rounded-lg border border-border shadow-sm">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Antes-yXfZI8vbn8ly4YlCjIfI3Fmx6S9Qjy.png"
-                  alt="Raw survey data showing inconsistent free-text responses for salary expectations"
+                  alt="Raw survey data"
                   className="h-auto w-full max-w-xs object-contain"
                 />
               </div>
             </div>
 
-            {/* Arrow */}
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10">
               <ArrowRightIcon className="h-7 w-7 text-primary" />
             </div>
 
-            {/* After */}
             <div className="flex flex-1 flex-col items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                Despues (Formatted Data)
+                Después (Datos formateados)
               </span>
               <div className="overflow-hidden rounded-lg border border-border shadow-sm">
                 <img
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Despues-DzXMnUZLzkvLF3eKzezSv2b4PJUhJR.png"
-                  alt="Cleaned data with binary willing/not willing categories and normalized salary values"
+                  alt="Cleaned data"
                   className="h-auto w-full max-w-xs object-contain"
                 />
               </div>
             </div>
           </div>
 
-          {/* Explanation text */}
           <div className="rounded-lg bg-secondary/50 p-5">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {'Since the raw data came from open-ended text fields, it was highly inconsistent\u2014containing words, varied decimal formats, and zeros. Using Gemini AI, we performed a systematic cleaning process:'}
+              Dado que los datos crudos provenían de campos de texto libre, eran altamente inconsistentes, contenían palabras, formatos decimales variados y ceros. Usando Gemini AI, realizamos un proceso sistemático de limpieza:
             </p>
             <ol className="mt-3 list-inside list-decimal space-y-1.5 text-sm text-muted-foreground leading-relaxed">
-              <li>{'Categorized responses into binary indicators (Willing to leave: Yes/No).'}</li>
-              <li>{'Extracted and normalized monthly salary expectations into numeric values.'}</li>
+              <li>Categorizamos las respuestas en indicadores binarios (Dispuesto a vender: Sí/No).</li>
+              <li>Extrajimos y normalizamos las expectativas de salario mensual en valores numéricos.</li>
             </ol>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-              {'This allows us to quantify the economic valuation of each Nanostore. Finally, we audited the information to ensure each data point remained correctly mapped to its specific store, preventing cross-referenced errors.'}
+              Esto nos permite cuantificar la valuación económica de cada Nanostore. Finalmente, auditamos la información para asegurar que cada punto de datos permaneciera correctamente mapeado a su tienda específica.
             </p>
           </div>
         </motion.div>
 
-        {/* Charts Grid */}
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
-          {/* Donut Chart - Willingness to Exit */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
@@ -187,33 +165,33 @@ export function SlideValuation({
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-card-foreground">
-                {'Willingness to Exit for a Fixed Salary'}
+                Disposición a vender por salario fijo
               </h3>
               <div className="flex items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded" style={{ backgroundColor: '#1a3a5c' }} />
-                  <span className="text-muted-foreground">Willing</span>
+                  <span className="text-muted-foreground">Dispuesto</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded" style={{ backgroundColor: '#4ECDC4' }} />
-                  <span className="text-muted-foreground">Not Willing</span>
+                  <span className="text-muted-foreground">No dispuesto</span>
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={260}>
+            <ResponsiveContainer width="100%" height={320}>
               <PieChart>
                 <Pie
                   data={willingnessChartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={65}
-                  outerRadius={100}
+                  innerRadius={80}
+                  outerRadius={130}
                   paddingAngle={3}
                   dataKey="value"
                   nameKey="name"
                   stroke="none"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
-                  labelLine={false}
+                  label={({ name, percent }) => `${(percent * 100).toFixed(1)}%`}
+                  labelLine={true}
                 >
                   {willingnessChartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
@@ -226,7 +204,7 @@ export function SlideValuation({
                     border: '1px solid #e5e7eb',
                   }}
                   formatter={(value: number, name: string, props: any) => [
-                    `${(props.payload.percent * 100).toFixed(1)}%`,
+                    `${value} (${(props.payload.percent * 100).toFixed(1)}%)`,
                     name,
                   ]}
                 />
@@ -234,16 +212,15 @@ export function SlideValuation({
             </ResponsiveContainer>
           </motion.div>
 
-          {/* Bar Chart - Salary Distribution */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
-              {'Monthly Salary Expectations Distribution'}
+              Distribución de expectativas de salario mensual
             </h3>
-            <ResponsiveContainer width="100%" height={260}>
+            <ResponsiveContainer width="100%" height={320}>
               <BarChart
                 data={salaryDistribution}
                 margin={{ top: 20, right: 10, left: 0, bottom: 20 }}
@@ -253,7 +230,7 @@ export function SlideValuation({
                   dataKey="range"
                   tick={{ fontSize: 10, fill: '#6b7280' }}
                   label={{
-                    value: 'ARS salary range',
+                    value: 'Rango de salario (ARS)',
                     position: 'insideBottom',
                     offset: -10,
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -262,7 +239,7 @@ export function SlideValuation({
                 <YAxis
                   tick={{ fontSize: 11, fill: '#6b7280' }}
                   label={{
-                    value: 'Owners',
+                    value: 'Dueños',
                     angle: -90,
                     position: 'insideLeft',
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -280,7 +257,7 @@ export function SlideValuation({
                   stroke="#ED7D31"
                   strokeDasharray="5 5"
                   label={{
-                    value: 'Avg',
+                    value: 'Prom',
                     position: 'right',
                     style: { fontSize: 10, fill: '#ED7D31' },
                   }}
@@ -289,7 +266,7 @@ export function SlideValuation({
                   dataKey="count"
                   fill="#1a3a5c"
                   radius={[3, 3, 0, 0]}
-                  name="Owners"
+                  name="Dueños"
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -297,7 +274,6 @@ export function SlideValuation({
         </div>
       </div>
 
-      {/* Footer */}
       <SlideFooter page={5} />
     </section>
   )

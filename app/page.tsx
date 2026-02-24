@@ -108,7 +108,6 @@ export default function Home() {
             averageEmployees={averageEmployees}
             averageBusinessAge={averageBusinessAge}
             mostFrequentBusinessType={mostFrequentBusinessType}
-            geoPoints={geoPoints}
             onBack={goBack}
           />
         </motion.div>

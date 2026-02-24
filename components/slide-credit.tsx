@@ -10,7 +10,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -61,28 +60,8 @@ export function SlideCredit({
   barriers,
   onBack,
 }: SlideCreditProps) {
-  
-  const priceCompetitionImpact = businessImpactData.filter(
-    d => d.variable === 'Price Increases' || d.variable === 'Competition'
-  )
-  const lackOfCreditImpact = businessImpactData.find(d => d.variable === 'Lack of Credit')
-  
-  const priceCompetitionAvg = priceCompetitionImpact.reduce((sum, d) => {
-    const total = d.nada + d.poco + d.algo + d.moderado + d.mucho
-    const weighted = d.nada * 0 + d.poco * 1 + d.algo * 2 + d.moderado * 3 + d.mucho * 4
-    return sum + (total > 0 ? weighted / total : 0)
-  }, 0) / priceCompetitionImpact.length
-  
-  const lackOfCreditTotal = lackOfCreditImpact 
-    ? lackOfCreditImpact.nada + lackOfCreditImpact.poco + lackOfCreditImpact.algo + lackOfCreditImpact.moderado + lackOfCreditImpact.mucho 
-    : 0
-  const lackOfCreditAvg = lackOfCreditImpact && lackOfCreditTotal > 0
-    ? (lackOfCreditImpact.nada * 0 + lackOfCreditImpact.poco * 1 + lackOfCreditImpact.algo * 2 + lackOfCreditImpact.moderado * 3 + lackOfCreditImpact.mucho * 4) / lackOfCreditTotal
-    : 0
-  
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
-      {/* Back button */}
       <div className="fixed left-4 top-4 z-50">
         <Button
           variant="outline"
@@ -91,23 +70,21 @@ export function SlideCredit({
           className="gap-2 border-border bg-card/95 shadow-md backdrop-blur-sm text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Roadmap
+          Volver al Mapa
         </Button>
       </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pt-20 pb-8">
-        {/* Header */}
         <motion.div className="mb-8 text-center" {...fadeUp} transition={{ duration: 0.5 }}>
           <span className="mb-3 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
-            05 - Credit
+            05 - Crédito
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {'Access to '}
-            <span className="text-primary">Credit</span>
+            {'Acceso al '}
+            <span className="text-primary">Crédito</span>
           </h2>
         </motion.div>
 
-        {/* Angry Numbers Summary */}
         <motion.div
           className="mb-10 flex flex-col gap-4 sm:flex-row"
           {...fadeUp}
@@ -118,10 +95,10 @@ export function SlideCredit({
               {creditImpactPct}%
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Credit Impact
+              Impacto del Crédito
             </span>
             <span className="text-center text-[10px] text-muted-foreground/70">
-              {'Answered Mucho or Moderado'}
+              Respondieron "Mucho" o "Moderado"
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
@@ -140,41 +117,28 @@ export function SlideCredit({
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
             <span className="text-balance text-center text-lg font-black leading-snug tracking-tight text-foreground sm:text-xl">
-              {mainBarrier.length > 40 ? mainBarrier.slice(0, 40) + '...' : mainBarrier}
+              {mainBarrier.length > 45 ? mainBarrier.slice(0, 45) + '...' : mainBarrier}
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Main Barrier
+              Principal barrera
             </span>
             <span className="text-center text-[10px] text-muted-foreground/70">
-              {'Most frequent reason'}
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-destructive/20 bg-card p-6 shadow-sm">
-            <span className="text-4xl font-black tracking-tight text-destructive sm:text-5xl">
-              {priceCompetitionAvg > lackOfCreditAvg ? 'Higher' : 'Lower'}
-            </span>
-            <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Price & Competition Impact
-            </span>
-            <span className="text-center text-[10px] text-muted-foreground/70">
-              vs. Lack of Credit
+              Razón más frecuente
             </span>
           </div>
         </motion.div>
 
-        {/* Charts Grid - 2x2 */}
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2">
-          {/* Chart 1: Business Impact Comparison (Grouped Bar) */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <h3 className="mb-1 text-sm font-bold text-card-foreground">
-              Business Impact Comparison
+              Comparación de Impacto en el Negocio
             </h3>
             <p className="mb-4 text-[11px] text-muted-foreground">
-              {'Distribution of impact scale across key variables'}
+              Distribución de la escala de impacto across variables clave
             </p>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart
@@ -189,7 +153,7 @@ export function SlideCredit({
                 <YAxis
                   tick={{ fontSize: 11, fill: '#6b7280' }}
                   label={{
-                    value: 'Responses',
+                    value: 'Respuestas',
                     angle: -90,
                     position: 'insideLeft',
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -202,7 +166,6 @@ export function SlideCredit({
                     border: '1px solid #e5e7eb',
                   }}
                 />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
                 <Bar dataKey="nada" fill={IMPACT_COLORS.nada} name="Nada" stackId="impact" />
                 <Bar dataKey="poco" fill={IMPACT_COLORS.poco} name="Poco" stackId="impact" />
                 <Bar dataKey="algo" fill={IMPACT_COLORS.algo} name="Algo" stackId="impact" />
@@ -212,17 +175,16 @@ export function SlideCredit({
             </ResponsiveContainer>
           </motion.div>
 
-          {/* Chart 2: Credit Sources (Bar Chart) */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <h3 className="mb-1 text-sm font-bold text-card-foreground">
-              Credit Sources
+              Fuentes de Crédito
             </h3>
             <p className="mb-4 text-[11px] text-muted-foreground">
-              {'Number of owners using each credit source'}
+              Número de owners usando cada fuente de crédito
             </p>
             <ResponsiveContainer width="100%" height={280}>
               <BarChart
@@ -234,7 +196,7 @@ export function SlideCredit({
                   dataKey="source"
                   tick={{ fontSize: 10, fill: '#6b7280' }}
                   label={{
-                    value: 'Source',
+                    value: 'Fuente',
                     position: 'insideBottom',
                     offset: -10,
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -243,7 +205,7 @@ export function SlideCredit({
                 <YAxis
                   tick={{ fontSize: 11, fill: '#6b7280' }}
                   label={{
-                    value: 'Owners',
+                    value: 'Dueños',
                     angle: -90,
                     position: 'insideLeft',
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -260,13 +222,12 @@ export function SlideCredit({
                   dataKey="count"
                   fill="#1a3a5c"
                   radius={[3, 3, 0, 0]}
-                  name="Owners"
+                  name="Dueños"
                 />
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
 
-          {/* Chart 3: Institucional vs No Institucional Credit (Donut) */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
@@ -304,7 +265,7 @@ export function SlideCredit({
                     border: '1px solid #e5e7eb',
                   }}
                   formatter={(value: number, name: string, props: any) => [
-                    `${(props.payload.percent * 100).toFixed(1)}%`,
+                    `${value} (${(props.payload.percent * 100).toFixed(1)}%)`,
                     name,
                   ]}
                 />
@@ -320,17 +281,16 @@ export function SlideCredit({
             </div>
           </motion.div>
 
-          {/* Chart 4: Barriers to Bank Credit (Horizontal Bar) */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
             <h3 className="mb-1 text-sm font-bold text-card-foreground">
-              Barriers to Bank Credit
+              Barreras para obtener Crédito Bancario
             </h3>
             <p className="mb-4 text-[11px] text-muted-foreground">
-              {'Primary reasons for not having bank credit'}
+              Razones principales para no tener crédito bancario
             </p>
             <ResponsiveContainer
               width="100%"
@@ -346,7 +306,7 @@ export function SlideCredit({
                   type="number"
                   tick={{ fontSize: 11, fill: '#6b7280' }}
                   label={{
-                    value: 'Responses',
+                    value: 'Respuestas',
                     position: 'insideBottom',
                     offset: -2,
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -369,7 +329,7 @@ export function SlideCredit({
                   dataKey="count"
                   fill="#1a3a5c"
                   radius={[0, 3, 3, 0]}
-                  name="Responses"
+                  name="Respuestas"
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -377,7 +337,6 @@ export function SlideCredit({
         </div>
       </div>
 
-      {/* Footer */}
       <SlideFooter page={6} />
     </section>
   )

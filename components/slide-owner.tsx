@@ -37,7 +37,6 @@ export function SlideOwner({
   educationData,
   onBack,
 }: SlideOwnerProps) {
-  // Extract angry numbers
   const topEducation = educationData.length > 0
     ? educationData.reduce((a, b) => (a.percentage > b.percentage ? a : b))
     : null
@@ -49,9 +48,18 @@ export function SlideOwner({
   const maleObj = genderPercentage.find(g => g.gender === 'Hombre')
   const femaleObj = genderPercentage.find(g => g.gender === 'Mujer')
 
+  const totalAgeGender = ageGenderData.reduce((sum, d) => sum + d.hombre + d.mujer, 0)
+  
+  const ageGenderWithPct = ageGenderData.map(d => ({
+    ...d,
+    total: d.hombre + d.mujer,
+    pctHombre: totalAgeGender > 0 ? parseFloat(((d.hombre / totalAgeGender) * 100).toFixed(1)) : 0,
+    pctMujer: totalAgeGender > 0 ? parseFloat(((d.mujer / totalAgeGender) * 100).toFixed(1)) : 0,
+    pctTotal: totalAgeGender > 0 ? parseFloat((((d.hombre + d.mujer) / totalAgeGender) * 100).toFixed(1)) : 0,
+  }))
+
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
-      {/* Back button */}
       <div className="fixed left-4 top-4 z-50">
         <Button
           variant="outline"
@@ -60,23 +68,21 @@ export function SlideOwner({
           className="gap-2 border-border bg-card/95 shadow-md backdrop-blur-sm text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Roadmap
+          Volver al Mapa
         </Button>
       </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pt-20 pb-8">
-        {/* Header */}
         <motion.div className="mb-8 text-center" {...fadeUp} transition={{ duration: 0.5 }}>
           <span className="mb-3 inline-block rounded-md bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent">
-            03 - Owner Profile
+            03 - Perfil del Dueño
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {'The Typical Nanostore '}
-            <span className="text-accent">Owner</span>
+            {'El Dueño Típico del '}
+            <span className="text-accent">Nanostore</span>
           </h2>
         </motion.div>
 
-        {/* Angry Numbers Summary */}
         <motion.div
           className="mb-10 flex flex-col gap-4 sm:flex-row"
           {...fadeUp}
@@ -95,10 +101,10 @@ export function SlideOwner({
           {topAgeRange && (
             <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
               <span className="text-4xl font-black tracking-tight text-accent sm:text-5xl">
-                {topAgeRange.ageRange}
+                {topAgeRange.ageRange.replace('De ', '').replace(' a ', '-')}
               </span>
               <span className="mt-1 text-sm font-medium text-muted-foreground">
-                {'Most frequent age range'}
+                Rango de edad más frecuente
               </span>
             </div>
           )}
@@ -113,14 +119,12 @@ export function SlideOwner({
               </span>
             </div>
             <span className="mt-1 text-sm font-medium text-muted-foreground">
-              {'Male / Female split'}
+              Hombre / Mujer
             </span>
           </div>
         </motion.div>
 
-        {/* Charts */}
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[2fr_1fr] lg:grid-rows-[1fr_1fr]">
-          {/* Age + Gender Stacked Bar */}
           <motion.div
             className="row-span-2 rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
@@ -128,28 +132,22 @@ export function SlideOwner({
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-card-foreground">
-                {'Age and Gender Distribution'}
+                Distribución por Edad y Género
               </h3>
               <div className="flex items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded" style={{ backgroundColor: '#1a3a5c' }} />
-                  <span className="text-muted-foreground">Male</span>
+                  <span className="text-muted-foreground">Hombre</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded" style={{ backgroundColor: '#ED7D31' }} />
-                  <span className="text-muted-foreground">Female</span>
+                  <span className="text-muted-foreground">Mujer</span>
                 </div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={380}>
               <BarChart
-                data={ageGenderData.map(d => ({
-                  ...d,
-                  total: d.hombre + d.mujer,
-                  pct: ageGenderData.length > 0 
-                    ? ((d.hombre + d.mujer) / ageGenderData.reduce((sum, r) => sum + r.hombre + r.mujer, 0) * 100).toFixed(1)
-                    : '0'
-                }))}
+                data={ageGenderWithPct}
                 margin={{ top: 20, right: 10, left: 0, bottom: 40 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -163,7 +161,7 @@ export function SlideOwner({
                 <YAxis
                   tick={{ fontSize: 11, fill: '#6b7280' }}
                   label={{
-                    value: 'Count',
+                    value: 'Cantidad',
                     angle: -90,
                     position: 'insideLeft',
                     style: { fontSize: 10, fill: '#9ca3af' },
@@ -173,39 +171,36 @@ export function SlideOwner({
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
                   formatter={(value: number, name: string) => [
                     value,
-                    name === 'hombre' ? 'Male' : 'Female'
+                    name === 'hombre' ? 'Hombre' : name === 'mujer' ? 'Mujer' : name
                   ]}
                 />
-                <Bar dataKey="mujer" stackId="gender" fill="#ED7D31" name="mujer" />
+                <Bar dataKey="mujer" stackId="gender" fill="#ED7D31" name="Mujer" />
                 <Bar
                   dataKey="hombre"
                   stackId="gender"
                   fill="#1a3a5c"
-                  name="hombre"
+                  name="Hombre"
                   radius={[3, 3, 0, 0]}
-                  label={{ 
-                    position: 'top', 
-                    formatter: (value: number) => `${value}%`,
-                    style: { fontSize: 9, fill: '#6b7280' }
-                  }}
                 />
               </BarChart>
             </ResponsiveContainer>
+            <div className="mt-2 text-center text-xs text-muted-foreground">
+              Total: {totalAgeGender} nanostores ({ageGenderWithPct.reduce((s, d) => s + d.pctTotal, 0).toFixed(0)}%)
+            </div>
           </motion.div>
 
-          {/* Gender Percentage Table */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <h3 className="mb-4 text-sm font-bold text-card-foreground">
-              {'Owner Gender (%)'}
+              Género del Dueño (%)
             </h3>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="pb-2 text-left font-semibold text-primary">Gender</th>
+                  <th className="pb-2 text-left font-semibold text-primary">Género</th>
                   <th className="pb-2 text-right font-semibold text-primary">%</th>
                 </tr>
               </thead>
@@ -216,8 +211,7 @@ export function SlideOwner({
                     <td className="py-3 text-right tabular-nums text-card-foreground">
                       {item.percentage.toLocaleString('es-AR', {
                         minimumFractionDigits: 2,
-                      })}
-                      %
+                      })}%
                     </td>
                   </tr>
                 ))}
@@ -225,14 +219,13 @@ export function SlideOwner({
             </table>
           </motion.div>
 
-          {/* Education Level */}
           <motion.div
             className="rounded-xl border border-border bg-card p-5 shadow-sm"
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <h3 className="mb-1 text-sm font-bold text-card-foreground">
-              {'Nivel Educativo Alcanzado'}
+              Nivel Educativo Alcanzado
             </h3>
             <div className="mb-3 p-2 rounded bg-amber-50 border border-amber-200">
               <p className="text-[10px] text-amber-800">
@@ -264,13 +257,13 @@ export function SlideOwner({
                 />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
-                  formatter={(value: number) => [`${value}%`, 'Percentage']}
+                  formatter={(value: number) => [`${value}%`, 'Porcentaje']}
                 />
                 <Bar
                   dataKey="percentage"
                   fill="#1a3a5c"
                   radius={[0, 3, 3, 0]}
-                  name="Education Level"
+                  name="Nivel Educativo"
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -278,7 +271,6 @@ export function SlideOwner({
         </div>
       </div>
 
-      {/* Footer */}
       <SlideFooter page={4} />
     </section>
   )

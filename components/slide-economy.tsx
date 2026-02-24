@@ -92,10 +92,10 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           </h3>
           <div className="rounded-xl border border-border bg-muted/30 p-6 space-y-4">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              In Argentina, the SME landscape presents significant challenges: <span className="font-semibold text-foreground">80% of startups do not survive their first year</span>, while only <span className="font-semibold text-foreground">30% of businesses reach 8 years of operation</span>. Nearly <span className="font-semibold text-accent">28.8% of entrepreneurs operate in the retail sector</span>, specifically within the nanostore category, making this research particularly relevant for the country&apos;s economic development.
+              In Argentina, the SME landscape presents significant challenges: <span className="font-semibold text-foreground">80% of emprendimientos do not survive their first year</span>, while only <span className="font-semibold text-foreground">30% of businesses reach 8 years of operation</span>. Nearly <span className="font-semibold text-accent">28.8% of entrepreneurs operate in the retail sector</span>, specifically within the nanostore category, making this research particularly relevant for the country&apos;s economic development.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              According to <span className="font-semibold text-foreground">CEPAL projections</span>, private consumption growth for 2025 and 2026 is expected to remain weak, placing significant pressure on the profitability and survival of neighborhood stores. However, approximately <span className="font-semibold text-primary">23.3% of the adult population</span> is involved in entrepreneurial activities, underscoring the vital importance of these firms for the local economy.
+              According to <span className="font-semibold text-foreground">CEPAL projections</span>, private consumption growth for 2025 and 2026 is expected to remain weak, placing significant pressure on the profitability and survival of neighborhood stores.
             </p>
           </div>
         </motion.div>
