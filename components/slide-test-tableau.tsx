@@ -46,44 +46,81 @@ export function SlideTestTableau({ onBack }: SlideTestTableauProps) {
           <h3 className="mb-4 text-sm font-bold text-card-foreground">
             Razones para no crecer
           </h3>
-          <div className="w-full h-[500px]">
-            <div className='tableauPlaceholder' id='viz1771961246634' style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <noscript>
-                <a href='#'>
-                  <img alt='Razón para no crecer ' src='https://public.tableau.com/static/images/Li/Libro3_17719395393810/Raznparanocrecer/1_rss.png' style={{ border: 'none' }} />
-                </a>
-              </noscript>
-              <object className='tableauViz' style={{ display: 'none' }}>
-                <param name='host_url' value='https://public.tableau.com/' />
-                <param name='embed_code_version' value='3' />
-                <param name='site_root' value='' />
-                <param name='name' value='Libro3_17719395393810/Raznparanocrecer' />
-                <param name='tabs' value='no' />
-                <param name='toolbar' value='yes' />
-                <param name='static_image' value='https://public.tableau.com/static/images/Li/Libro3_17719395393810/Raznparanocrecer/1.png' />
-                <param name='animate_transition' value='yes' />
-                <param name='display_static_image' value='yes' />
-                <param name='display_spinner' value='yes' />
-                <param name='display_overlay' value='yes' />
-                <param name='display_count' value='yes' />
-                <param name='language' value='es-ES' />
-                <param name='filter' value='publish=yes' />
-              </object>
-            </div>
-            <script type='text/javascript'>
-              {`
-                var divElement = document.getElementById('viz1771961246634');
-                var vizElement = divElement.getElementsByTagName('object')[0];
-                if (divElement.offsetWidth) {
-                  vizElement.style.width = '100%';
-                  vizElement.style.height = (divElement.offsetWidth * 0.75) + 'px';
-                }
-                var scriptElement = document.createElement('script');
-                scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-                vizElement.parentNode.insertBefore(scriptElement, vizElement);
-              `}
-            </script>
-          </div>
+          <iframe
+            src="https://public.tableau.com/views/Libro3_17719395393810/Raznparanocrecer?:showVizHome=no&:embed=y&:display_count=n&:tabs=n&:toolbar=n"
+            width="100%"
+            height="600"
+            style={{ border: 'none', borderRadius: '8px' }}
+            title="Razones para no crecer"
+          />
+        </motion.div>
+
+        <motion.div
+          className="mt-6 rounded-xl border border-border bg-card p-4 shadow-sm"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <h3 className="mb-4 text-sm font-bold text-card-foreground">
+            Nivel de Tecnología
+          </h3>
+          <iframe
+            src="https://public.tableau.com/views/Libro3_17719395393810/Niveldetecnologa?:showVizHome=no&:embed=y&:display_count=n&:tabs=n&:toolbar=n"
+            width="100%"
+            height="600"
+            style={{ border: 'none', borderRadius: '8px' }}
+            title="Nivel de Tecnología"
+          />
+        </motion.div>
+
+        <motion.div
+          className="mt-6 rounded-xl border border-border bg-card p-4 shadow-sm"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <h3 className="mb-4 text-sm font-bold text-card-foreground">
+            Tecnologías más utilizadas
+          </h3>
+          <iframe
+            src="https://public.tableau.com/views/Libro3_17719395393810/Tecnologasmasutilizadas?:showVizHome=no&:embed=y&:display_count=n&:tabs=n&:toolbar=n"
+            width="100%"
+            height="600"
+            style={{ border: 'none', borderRadius: '8px' }}
+            title="Tecnologías más utilizadas"
+          />
+        </motion.div>
+
+        <motion.div
+          className="mt-6 rounded-xl border border-border bg-card p-4 shadow-sm"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <h3 className="mb-4 text-sm font-bold text-card-foreground">
+            Sueldo Pretendido vs Nivel de Tecnología
+          </h3>
+          <iframe
+            src="https://public.tableau.com/views/Libro3_17719395393810/Sueldopretendidovs_Niveldetecnologa?:showVizHome=no&:embed=y&:display_count=n&:tabs=n&:toolbar=n"
+            width="100%"
+            height="600"
+            style={{ border: 'none', borderRadius: '8px' }}
+            title="Sueldo vs Tecnología"
+          />
+        </motion.div>
+
+        <motion.div
+          className="mt-6 rounded-xl border border-border bg-card p-4 shadow-sm"
+          {...fadeUp}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <h3 className="mb-4 text-sm font-bold text-card-foreground">
+            Desempeño de Ventas vs Mes Pasado
+          </h3>
+          <iframe
+            src="https://public.tableau.com/views/Libro3_17719395393810/Ventasvs_LMyNiveldetecnologa?:showVizHome=no&:embed=y&:display_count=n&:tabs=n&:toolbar=n"
+            width="100%"
+            height="600"
+            style={{ border: 'none', borderRadius: '8px' }}
+            title="Ventas vs Mes Pasado"
+          />
         </motion.div>
       </div>
 
