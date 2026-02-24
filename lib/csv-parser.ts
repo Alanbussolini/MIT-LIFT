@@ -1180,13 +1180,6 @@ export function computeAMBAgeoPoints(rows: SurveyRow[]): GeoPoint[] {
 export function computeBuenosAiresMapPoints(rows: SurveyRow[]): GeoPoint[] {
   const points: GeoPoint[] = []
   
-  const AMBA_BOUNDS = {
-    latMin: -35.0,
-    latMax: -34.3,
-    lngMin: -59.0,
-    lngMax: -58.0,
-  }
-  
   rows.forEach(row => {
     const latStr = row.latitudeCorrect || row.latitude
     const lngStr = row.longitudeCorrect || row.longitude
@@ -1195,14 +1188,7 @@ export function computeBuenosAiresMapPoints(rows: SurveyRow[]): GeoPoint[] {
       const lat = parseFloat(latStr.replace(',', '.'))
       const lng = parseFloat(lngStr.replace(',', '.'))
       
-      if (
-        !isNaN(lat) &&
-        !isNaN(lng) &&
-        lat >= AMBA_BOUNDS.latMin &&
-        lat <= AMBA_BOUNDS.latMax &&
-        lng >= AMBA_BOUNDS.lngMin &&
-        lng <= AMBA_BOUNDS.lngMax
-      ) {
+      if (!isNaN(lat) && !isNaN(lng)) {
         points.push({
           lat,
           lng,

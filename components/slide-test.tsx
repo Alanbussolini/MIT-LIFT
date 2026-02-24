@@ -72,11 +72,10 @@ export function SlideTest({
             Test Card
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {'Mapa de Nanostores en '}
-            <span className="text-primary">Buenos Aires</span>
+            {'Mapa de Nanostores'}
           </h2>
           <p className="mt-3 text-sm text-muted-foreground max-w-xl mx-auto">
-            Distribución geográfica de los nanostores en la región AMBA
+            Distribución geográfica de los nanostores
           </p>
         </motion.div>
 
@@ -90,7 +89,7 @@ export function SlideTest({
               {safeGeoPoints.length}
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              Nanostores en AMBA
+              Nanostores con coordenadas
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
@@ -109,7 +108,7 @@ export function SlideTest({
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="mb-4 text-sm font-bold text-card-foreground">
-            Ubicación de Nanostores - Buenos Aires
+            Ubicación de Nanostores
           </h3>
           <div className="h-[500px] rounded-lg overflow-hidden">
             {safeGeoPoints.length > 0 ? (
@@ -177,12 +176,8 @@ export function SlideTest({
             <MapPin className="h-4 w-4 text-accent mt-0.5" />
             <div className="text-xs text-muted-foreground">
               <p className="font-semibold text-foreground mb-1">Nota metodológica:</p>
-              <p>Solo se muestran puntos dentro de la región AMBA (Área Metropolitana de Buenos Aires):</p>
-              <ul className="list-disc list-inside mt-1 space-y-0.5">
-                <li>Latitud: -35.0 a -34.3</li>
-                <li>Longitud: -59.0 a -58.0</li>
-              </ul>
-              <p className="mt-1">Coordenadas tomadas de las columnas "Latitud bien" y "Longitud bien".</p>
+              <p>Coordenadas tomadas de las columnas "Latitud bien" y "Longitud bien" del CSV.</p>
+              <p className="mt-1">Total de puntos: {safeGeoPoints.length}</p>
             </div>
           </div>
         </motion.div>
