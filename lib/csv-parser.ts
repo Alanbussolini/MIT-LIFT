@@ -5,6 +5,8 @@ export interface SurveyRow {
   surveyorName: string
   latitude: string
   longitude: string
+  latitudeCorrect: string
+  longitudeCorrect: string
   businessType: string
   hasGate: string // "Sí" | "No"
   openingYear: number | null
@@ -65,6 +67,8 @@ export function parseCSV(text: string): SurveyRow[] {
       surveyorName: cols[3]?.trim() || '',
       latitude: cols[4]?.trim() || '',
       longitude: cols[5]?.trim() || '',
+      latitudeCorrect: cols[47]?.trim() || '',
+      longitudeCorrect: cols[48]?.trim() || '',
       businessType: cols[6]?.trim() || '',
       hasGate: cols[7]?.trim() || '',
       openingYear: parseFloatSafe(cols[8]),
@@ -1151,6 +1155,45 @@ export function computeAMBAgeoPoints(rows: SurveyRow[]): GeoPoint[] {
     if (row.latitude && row.longitude) {
       const lat = parseFloat(row.latitude.replace(',', '.'))
       const lng = parseFloat(row.longitude.replace(',', '.'))
+      
+      if (
+        !isNaN(lat) &&
+        !isNaN(lng) &&
+        lat >= AMBA_BOUNDS.latMin &&
+        lat <= AMBA_BOUNDS.latMax &&
+        lng >= AMBA_BOUNDS.lngMin &&
+        lng <= AMBA_BOUNDS.lngMax
+      ) {
+        points.push({
+          lat,
+          lng,
+          businessType: row.businessType || 'Unknown',
+          businessName: row.businessName || '',
+        })
+      }
+    }
+  })
+  
+  return points
+}
+
+export function computeBuenosAiresMapPoints(rows: SurveyRow[]): GeoPoint[] {
+  const points: GeoPoint[] = []
+  
+  const AMBA_BOUNDS = {
+    latMin: -35.0,
+    latMax: -34.3,
+    lngMin: -59.0,
+    lngMax: -58.0,
+  }
+  
+  rows.forEach(row => {
+    const latStr = row.latitudeCorrect || row.latitude
+    const lngStr = row.longitudeCorrect || row.longitude
+    
+    if (latStr && lngStr) {
+      const lat = parseFloat(latStr.replace(',', '.'))
+      const lng = parseFloat(lngStr.replace(',', '.'))
       
       if (
         !isNaN(lat) &&

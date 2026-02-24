@@ -1,10 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, ArrowRight } from 'lucide-react'
+import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, MapPin, ArrowRight } from 'lucide-react'
 
 interface RoadmapCardsProps {
-  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology') => void
+  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'test') => void
   disabled: boolean
 }
 
@@ -74,6 +74,17 @@ const cards = [
     bgColor: 'bg-accent/10',
     borderHover: 'hover:border-accent/40',
     tags: ['Growth Willingness', 'Salary vs Tech', 'Sales vs Tech'],
+  },
+  {
+    id: 'test' as const,
+    number: '07',
+    title: 'Mapa de Nanostores',
+    subtitle: 'Distribución geográfica de nanostores en Buenos Aires',
+    icon: MapPin,
+    color: 'text-primary',
+    bgColor: 'bg-primary/10',
+    borderHover: 'hover:border-primary/40',
+    tags: ['Buenos Aires', 'AMBA', 'Geolocalización'],
   },
 ]
 
