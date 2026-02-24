@@ -163,7 +163,6 @@ export default function Home() {
           transition={{ duration: 0.35 }}
         >
           <SlideTechnology
-            wantsGrowthData={wantsGrowth.chartData}
             onBack={goBack}
           />
         </motion.div>

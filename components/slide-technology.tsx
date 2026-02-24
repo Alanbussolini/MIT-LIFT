@@ -3,19 +3,8 @@
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
-import type {
-  WantsGrowthData,
-} from '@/lib/csv-parser'
 
 interface SlideTechnologyProps {
-  wantsGrowthData: WantsGrowthData[]
   onBack: () => void
 }
 
@@ -24,14 +13,9 @@ const fadeUp = {
   animate: { opacity: 1, y: 0 },
 }
 
-const BLUE_COLORS = ['#1a3a5c', '#4472C4']
-
 export function SlideTechnology({
-  wantsGrowthData,
   onBack,
 }: SlideTechnologyProps) {
-  const safeWantsGrowthData = wantsGrowthData || []
-
   return (
     <section className="relative min-h-screen w-full bg-background dot-grid-bg">
       <div className="fixed left-4 top-4 z-50">
@@ -63,41 +47,13 @@ export function SlideTechnology({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h3 className="mb-4 text-sm font-bold text-card-foreground">
-              ¿Quiere que su negocio crezca?
-            </h3>
-            <ResponsiveContainer width="100%" height={350}>
-              <PieChart>
-                <Pie
-                  data={safeWantsGrowthData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={80}
-                  outerRadius={140}
-                  paddingAngle={3}
-                  dataKey="value"
-                  nameKey="name"
-                  stroke="none"
-                  label={({ name, percent }) => `${(percent * 100).toFixed(1)}%`}
-                  labelLine={true}
-                >
-                  {safeWantsGrowthData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={BLUE_COLORS[index % BLUE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    fontSize: 12,
-                    borderRadius: 8,
-                    border: '1px solid #e5e7eb',
-                  }}
-                  formatter={(value: number, name: string, props: any) => [
-                    `${value} (${(props.payload.percent * 100).toFixed(1)}%)`,
-                    name,
-                  ]}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <iframe
+              src="https://public.tableau.com/views/Libro3_17719395393810/Hoja8?:showVizHome=no&:embed=y&:display_count=n&:tabs=n&:toolbar=n"
+              width="100%"
+              height="500"
+              style={{ border: 'none', borderRadius: '8px' }}
+              title="Asume que tenés los medios, ¿Te gustaría que tu negocio crezca?"
+            />
           </motion.div>
 
           <motion.div
