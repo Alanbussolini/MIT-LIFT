@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Globe, Store, UserRound, DollarSign, Landmark, Cpu, ArrowRight } from 'lucide-react'
 
 interface RoadmapCardsProps {
-  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology') => void
+  onSelectCard: (card: 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'testTableau') => void
   disabled: boolean
 }
 
@@ -74,6 +74,17 @@ const cards = [
     bgColor: 'bg-accent/10',
     borderHover: 'hover:border-accent/40',
     tags: ['Growth Willingness', 'Salary vs Tech', 'Sales vs Tech'],
+  },
+  {
+    id: 'testTableau' as const,
+    number: 'TEST',
+    title: 'Test Tableau',
+    subtitle: 'Prueba de嵌入 de Tableau',
+    icon: Globe,
+    color: 'text-primary',
+    bgColor: 'bg-primary/10',
+    borderHover: 'hover:border-primary/40',
+    tags: ['Tableau', 'Embed', 'Test'],
   },
 ]
 

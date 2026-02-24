@@ -11,6 +11,7 @@ import { SlideOwner } from '@/components/slide-owner'
 import { SlideValuation } from '@/components/slide-valuation'
 import { SlideCredit } from '@/components/slide-credit'
 import { SlideTechnology } from '@/components/slide-technology'
+import { SlideTestTableau } from '@/components/slide-test-tableau'
 import { parseCSV } from '@/lib/csv-parser'
 import {
   computeAgeGenderData,
@@ -43,7 +44,7 @@ import {
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
 
-type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology'
+type ActiveView = null | 'economy' | 'nanostore' | 'owner' | 'valuation' | 'credit' | 'technology' | 'testTableau'
 
 export default function Home() {
   const [csvText, setCsvText] = useState<string | null>(null)
@@ -176,6 +177,18 @@ export default function Home() {
             yesPct={wantsGrowth.yesPct}
             salaryByTechLevel={salaryByTechLevel}
             salesByTechLevel={salesByTechLevel}
+            onBack={goBack}
+          />
+        </motion.div>
+      ) : activeView === 'testTableau' ? (
+        <motion.div
+          key="testTableau"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.35 }}
+        >
+          <SlideTestTableau
             onBack={goBack}
           />
         </motion.div>
