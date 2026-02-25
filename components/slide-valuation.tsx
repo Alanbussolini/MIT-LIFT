@@ -89,7 +89,7 @@ export function SlideValuation({
               {notWillingPct}%
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
-              No disposto
+              No dispuesto a vender
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
