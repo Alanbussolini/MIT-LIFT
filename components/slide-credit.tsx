@@ -273,10 +273,10 @@ export function SlideCredit({
             </ResponsiveContainer>
             <div className="mt-2 p-2 rounded bg-muted/50 border border-border">
               <p className="text-[10px] text-muted-foreground">
-                <strong>Institucional:</strong> Bancos, Crédito Privado, Gobierno
+                <strong>Institucional:</strong> Bancos, Gobierno
               </p>
               <p className="text-[10px] text-muted-foreground">
-                <strong>No Institucional:</strong> Proveedores, Familia
+                <strong>No Institucional:</strong> Crédito Privado, Proveedores, Familia
               </p>
             </div>
           </motion.div>
