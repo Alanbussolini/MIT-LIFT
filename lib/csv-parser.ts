@@ -246,11 +246,15 @@ export function computeEducationData(rows: SurveyRow[]): EducationData[] {
   order.forEach(o => { counts[o] = 0 })
   
   rows.forEach(row => {
-    let level = row.educationLevel
+    let level = fixEncoding(row.educationLevel)
     if (level === 'Preparatoria') {
       level = 'Secundaria'
     }
-    if (counts[level] !== undefined) counts[level]++
+    if (counts[level] !== undefined) {
+      counts[level]++
+    } else if (level.toLowerCase().includes('universidad')) {
+      counts['Universidad y más']++
+    }
   })
   
   const total = Object.values(counts).reduce((a, b) => a + b, 0)
