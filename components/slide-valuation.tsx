@@ -108,7 +108,7 @@ export function SlideValuation({
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="mb-5 text-sm font-bold text-card-foreground">
-            Estandarización de Datos via Gemini AI
+            Estandarización de Datos
           </h3>
 
           <div className="mb-6 flex flex-col items-center gap-4 md:flex-row md:gap-6">
@@ -145,7 +145,7 @@ export function SlideValuation({
 
           <div className="rounded-lg bg-secondary/50 p-5">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Dado que los datos crudos provenían de campos de texto libre, eran altamente inconsistentes, contenían palabras, formatos decimales variados y ceros. Usando Gemini AI, realizamos un proceso sistemático de limpieza:
+              Dado que los datos crudos provenían de campos de texto libre, eran altamente inconsistentes, contenían palabras, formatos decimales variados y ceros. Se realizó un proceso sistemático de limpieza:
             </p>
             <ol className="mt-3 list-inside list-decimal space-y-1.5 text-sm text-muted-foreground leading-relaxed">
               <li>Categorizamos las respuestas en indicadores binarios (Dispuesto a vender: Sí/No).</li>

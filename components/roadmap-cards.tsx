@@ -51,7 +51,7 @@ const cards = [
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
-    tags: ['Limpieza con Gemini IA', 'Análisis de Salida', 'Distribución de Salario'],
+    tags: ['Estandarización de Datos', 'Análisis de Salida', 'Distribución de Salario'],
   },
   {
     id: 'credit' as const,
