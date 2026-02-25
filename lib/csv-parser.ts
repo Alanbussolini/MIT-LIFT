@@ -539,8 +539,8 @@ export function computeFormalInformalCredit(rows: SurveyRow[]): {
   let informal = 0
 
   rows.forEach(row => {
-    const hasFormal = isYes(row.creditBank) || isYes(row.creditPrivate) || isYes(row.creditGovernment)
-    const hasInformal = isYes(row.creditProviders) || isYes(row.creditFamily)
+    const hasFormal = isYes(row.creditBank) || isYes(row.creditGovernment)
+    const hasInformal = isYes(row.creditProviders) || isYes(row.creditFamily) || isYes(row.creditPrivate)
     if (hasFormal) formal++
     if (hasInformal) informal++
   })
