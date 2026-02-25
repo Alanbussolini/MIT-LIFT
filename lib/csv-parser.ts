@@ -90,7 +90,7 @@ export function parseCSV(text: string): SurveyRow[] {
       latitudeCorrect: cols[47]?.trim() || '',
       longitudeCorrect: cols[48]?.trim() || '',
       businessType: cols[6]?.trim() || '',
-      hasGate: cols[7]?.trim() || '',
+      hasGate: fixEncoding(cols[7]?.trim() || ''),
       openingYear: parseFloatSafe(cols[8]),
       businessAge: parseIntSafe(cols[9]),
       totalWorkers: parseFloatSafe(cols[10]),
