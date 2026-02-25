@@ -25,7 +25,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           className="gap-2 border-border bg-card/95 shadow-md backdrop-blur-sm text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Roadmap
+          Volver al Mapa
         </Button>
       </div>
 
@@ -37,13 +37,13 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           transition={{ duration: 0.5 }}
         >
           <span className="mb-3 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
-            01 - Context
+            01 - Contexto
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Nanostores in our economy
+            Nanostores en nuestra economía
           </h2>
           <p className="mt-3 max-w-lg text-muted-foreground leading-relaxed">
-            {'Understanding the role, scale, and challenges of nanostores across Latin America.'}
+            {'Comprendiendo el rol, escala y desafíos de los nanostores en América Latina.'}
           </p>
         </motion.div>
 
@@ -56,7 +56,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           >
             <span className="text-5xl font-black tracking-tight text-primary sm:text-6xl">95%</span>
             <span className="mt-2 text-center text-sm font-medium text-muted-foreground">
-              {'of LATAM businesses are SMEs'}
+              {'de las empresas en AL son PYMES'}
             </span>
           </motion.div>
           <motion.div
@@ -66,7 +66,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           >
             <span className="text-5xl font-black tracking-tight text-accent sm:text-6xl">60%+</span>
             <span className="mt-2 text-center text-sm font-medium text-muted-foreground">
-              {'of the workforce employed'}
+              {'de la fuerza laboral empleada'}
             </span>
           </motion.div>
           <motion.div
@@ -76,7 +76,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           >
             <span className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">Nanostores</span>
             <span className="mt-2 text-center text-sm font-medium text-muted-foreground">
-              {'One key form of SMEs'}
+              {'Una forma clave de PYMES'}
             </span>
           </motion.div>
         </div>
@@ -107,7 +107,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-            Defining Characteristics
+            Características Definitorias
           </h3>
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="flex flex-1 items-center gap-4 rounded-lg border border-border bg-card p-5 shadow-sm">
@@ -115,8 +115,8 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
                 <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-foreground">1-10 Workers</p>
-                <p className="text-xs text-muted-foreground">{'Micro-scale labor force'}</p>
+                <p className="text-lg font-bold text-foreground">1-10 Trabajadores</p>
+                <p className="text-xs text-muted-foreground">{'Fuerza laboral a microescala'}</p>
               </div>
             </div>
             <div className="flex flex-1 items-center gap-4 rounded-lg border border-border bg-card p-5 shadow-sm">
@@ -124,8 +124,8 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
                 <MapPin className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-foreground">Residential / Informal Areas</p>
-                <p className="text-xs text-muted-foreground">{'Neighborhood-embedded commerce'}</p>
+                <p className="text-lg font-bold text-foreground">Áreas Residenciales / Informales</p>
+                <p className="text-xs text-muted-foreground">{'Comercio barrial'}</p>
               </div>
             </div>
             <div className="flex flex-1 items-center gap-4 rounded-lg border border-border bg-card p-5 shadow-sm">
@@ -133,8 +133,8 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
                 <ShoppingBasket className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-foreground">Food & Perishables</p>
-                <p className="text-xs text-muted-foreground">{'Small quantities, daily sales'}</p>
+                <p className="text-lg font-bold text-foreground">Alimentos y Perecederos</p>
+                <p className="text-xs text-muted-foreground">{'Cantidades pequeñas, ventas diarias'}</p>
               </div>
             </div>
           </div>
@@ -147,24 +147,24 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground">
-            Key Challenges
+            Desafíos Clave
           </h3>
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="flex flex-1 items-center gap-4 rounded-xl border-2 border-destructive/20 bg-destructive/5 p-6">
               <ShieldAlert className="h-7 w-7 shrink-0 text-destructive" />
               <div>
-                <p className="font-bold text-foreground">Pressure from Modern Retail</p>
+                <p className="font-bold text-foreground">Presión de la Gran Distribución</p>
                 <p className="text-xs text-muted-foreground">
-                  {'Large chains erode market share'}
+                  {'Las cadenas grandes erosionan la participación de mercado'}
                 </p>
               </div>
             </div>
             <div className="flex flex-1 items-center gap-4 rounded-xl border-2 border-destructive/20 bg-destructive/5 p-6">
               <Zap className="h-7 w-7 shrink-0 text-destructive" />
               <div>
-                <p className="font-bold text-foreground">Technological Disruptions</p>
+                <p className="font-bold text-foreground">Disrupciones Tecnológicas</p>
                 <p className="text-xs text-muted-foreground">
-                  {'Digital commerce reshaping consumer behavior'}
+                  {'El comercio digital está transformando el comportamiento del consumidor'}
                 </p>
               </div>
             </div>
@@ -179,10 +179,10 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
         >
           <div className="flex items-center justify-center gap-2 mb-4">
             <Target className="h-6 w-6 text-primary" />
-            <h3 className="text-lg font-bold text-foreground">Research Objective</h3>
+            <h3 className="text-lg font-bold text-foreground">Objetivo de Investigación</h3>
           </div>
           <p className="mx-auto max-w-2xl text-sm text-muted-foreground leading-relaxed text-center mb-6">
-            {'Identify the key factors that determine the survival and economic growth of nanostores in Latin America through two main research verticals:'}
+            {'Identificar los factores clave que determinan la supervivencia y el crecimiento económico de los nanostores en América Latina a través de dos líneas de investigación principales:'}
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,9 +191,9 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
                 <CreditCard className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-bold text-foreground text-sm">Access to Credit</p>
+                <p className="font-bold text-foreground text-sm">Acceso al Crédito</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Analyze how access to formal and informal credit affects nanostore growth and survival rates
+                  Analizar cómo el acceso al crédito formal e informal afecta las tasas de crecimiento y supervivencia de los nanostores
                 </p>
               </div>
             </div>
@@ -202,9 +202,9 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
                 <Cpu className="h-5 w-5 text-accent" />
               </div>
               <div>
-                <p className="font-bold text-foreground text-sm">Technology Adoption</p>
+                <p className="font-bold text-foreground text-sm">Adopción de Tecnología</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Examine how digital technology adoption impacts nanostore growth and long-term sustainability
+                  Examinar cómo la adopción de tecnología digital impacta el crecimiento y la sostenibilidad a largo plazo de los nanostores
                 </p>
               </div>
             </div>
@@ -219,10 +219,10 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
         >
           <div className="flex items-center gap-2 mb-3">
             <Database className="h-4 w-4 text-muted-foreground" />
-            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Data Cleaning Criteria</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Criterios de Limpieza de Datos</h4>
           </div>
           <p className="text-sm text-muted-foreground">
-            All incomplete responses were removed using the <span className="font-semibold text-foreground">"Finished" = true</span> column filter to ensure data quality and consistency.
+            Se eliminaron todas las respuestas incompletas utilizando el filtro de columna <span className="font-semibold text-foreground">"Finished" = true</span> para asegurar la calidad y consistencia de los datos.
           </p>
         </motion.div>
 
@@ -239,7 +239,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
               </div>
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Source
+                  Fuente
                 </span>
                 <p className="text-sm font-medium text-foreground">
                   IMPACTO ECONÓMICO y SOCIAL DE LAS MiPyMES EN ARGENTINA (Senate Report)
@@ -252,7 +252,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
               rel="noopener noreferrer"
               className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              View Report
+              Ver Informe
             </a>
           </div>
         </motion.div>

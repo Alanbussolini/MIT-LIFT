@@ -33,7 +33,7 @@ export function SlideTechnology({
       <div className="mx-auto flex w-full max-w-7xl flex-col px-4 pt-20 pb-8">
         <motion.div className="mb-8 text-center" {...fadeUp} transition={{ duration: 0.5 }}>
           <span className="mb-3 inline-block rounded-md bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
-            06 - Technology Adoption
+            06 - Adopción de Tecnología
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             {'Nivel de Adopción de '}
