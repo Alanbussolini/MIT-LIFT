@@ -50,6 +50,26 @@ export interface SurveyRow {
   ownerAgeRange: string // "Menos de 20" | "De 21 a 30" | "De 31 a 40" | "De 41 a 50" | "De 51 a 60" | "Más de 60"
 }
 
+function fixEncoding(str: string): string {
+  if (!str) return ''
+  return str
+    .replace(/Ã©/g, 'é')
+    .replace(/Ã¡/g, 'á')
+    .replace(/Ã³/g, 'ó')
+    .replace(/Ã­/g, 'í')
+    .replace(/Ãº/g, 'ú')
+    .replace(/Ã±/g, 'ñ')
+    .replace(/Ã‰/g, 'É')
+    .replace(/Ã军/g, 'Á')
+    .replace(/Ã³/g, 'Ó')
+    .replace(/ÃŒ/g, 'Í')
+    .replace(/Ãš/g, 'Ú')
+    .replace(/Ã‘/g, 'Ñ')
+    .replace(/Ã /g, ' ')
+    .replace(/Â¿/g, '')
+    .replace(/Â/g, '')
+}
+
 export function parseCSV(text: string): SurveyRow[] {
   const lines = text.split('\n')
   if (lines.length < 2) return []
@@ -514,7 +534,7 @@ export function computeBankCreditBarriers(rows: SurveyRow[]): BarrierData[] {
   const counts: Record<string, number> = {}
 
   rows.forEach(row => {
-    const reason = row.noBankCreditReason
+    const reason = fixEncoding(row.noBankCreditReason)
     if (!reason || reason === '' || reason === '-') return
     counts[reason] = (counts[reason] || 0) + 1
   })
