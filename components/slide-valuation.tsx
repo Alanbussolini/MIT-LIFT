@@ -190,7 +190,11 @@ export function SlideValuation({
                   dataKey="value"
                   nameKey="name"
                   stroke="none"
-                  label={({ name, percent }) => `${(percent * 100).toFixed(1)}%`}
+                  label={({ name, value }) => {
+                    const total = willingnessChartData.reduce((sum, d) => sum + d.value, 0)
+                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
+                    return `${pct}%`
+                  }}
                   labelLine={true}
                 >
                   {willingnessChartData.map((_, index) => (
@@ -203,10 +207,11 @@ export function SlideValuation({
                     borderRadius: 8,
                     border: '1px solid #e5e7eb',
                   }}
-                  formatter={(value: number, name: string, props: any) => [
-                    `${value} (${(props.payload.percent * 100).toFixed(1)}%)`,
-                    name,
-                  ]}
+                  formatter={(value: number, name: string) => {
+                    const total = willingnessChartData.reduce((sum, d) => sum + d.value, 0)
+                    const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0'
+                    return [`${value} (${pct}%)`, name]
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>

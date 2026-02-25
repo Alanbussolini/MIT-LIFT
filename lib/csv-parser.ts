@@ -430,8 +430,8 @@ export function computeWillingnessToExit(rows: SurveyRow[]): {
     willingPct,
     notWillingPct,
     chartData: [
-      { name: 'Willing to Exit', value: willing },
-      { name: 'Not Willing', value: notWilling },
+      { name: 'Dispuesto', value: willing },
+      { name: 'No dispuesto', value: notWilling },
     ],
   }
 }
