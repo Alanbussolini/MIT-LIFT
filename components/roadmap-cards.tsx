@@ -87,7 +87,7 @@ export function RoadmapCards({ onSelectCard, disabled }: RoadmapCardsProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
       >
-        Research Dashboard
+        Research Roadmap
       </motion.p>
 
       {/* Dashed vertical line behind cards */}
