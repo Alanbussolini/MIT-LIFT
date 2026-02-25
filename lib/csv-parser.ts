@@ -419,8 +419,8 @@ export function computeWillingnessToExit(rows: SurveyRow[]): {
   notWillingPct: number
   chartData: WillingnessData[]
 } {
-  const willing = rows.filter(r => r.willingToLeave === 'Dispuesto').length
-  const notWilling = rows.filter(r => r.willingToLeave === 'No Dispuesto').length
+  const willing = rows.filter(r => fixEncoding(r.willingToLeave) === 'Dispuesto').length
+  const notWilling = rows.filter(r => fixEncoding(r.willingToLeave) === 'No Dispuesto').length
   const total = willing + notWilling
   const willingPct = total > 0 ? parseFloat(((willing / total) * 100).toFixed(1)) : 0
   const notWillingPct = total > 0 ? parseFloat(((notWilling / total) * 100).toFixed(1)) : 0
