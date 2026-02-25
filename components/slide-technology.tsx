@@ -46,40 +46,40 @@ export function SlideTechnology({
           {...fadeUp}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/20 bg-card p-6 shadow-sm">
-            <span className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/20 bg-card p-5 shadow-sm">
+            <span className="text-3xl font-black tracking-tight text-primary sm:text-4xl">
               78,64%
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
               quiere que su negocio crezca
             </span>
           </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-accent sm:text-4xl">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/20 bg-card p-5 shadow-sm">
+            <span className="text-2xl font-black tracking-tight text-accent sm:text-3xl">
               Está satisfecho con su negocio
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
               Razón 1
             </span>
           </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-6 shadow-sm">
-            <span className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-border bg-card p-5 shadow-sm">
+            <span className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
               Porque sería muy complicado administrarlo
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
               Razón 2
             </span>
           </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/30 bg-card p-6 shadow-sm">
-            <span className="text-4xl font-black tracking-tight text-primary sm:text-5xl">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-primary/30 bg-card p-5 shadow-sm">
+            <span className="text-3xl font-black tracking-tight text-primary sm:text-4xl">
               58,68%
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
               tiene un nivel de tecnología moderado
             </span>
           </div>
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/30 bg-card p-6 shadow-sm">
-            <span className="text-xl font-black tracking-tight text-accent sm:text-2xl">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/30 bg-card p-5 shadow-sm">
+            <span className="text-lg font-black tracking-tight text-accent sm:text-xl">
               Pagos electrónicos y Apps de mensajería
             </span>
             <span className="mt-1 text-center text-sm font-medium text-muted-foreground">
