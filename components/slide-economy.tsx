@@ -153,7 +153,7 @@ export function SlideEconomy({ onBack }: SlideEconomyProps) {
             <div className="flex flex-1 items-center gap-4 rounded-xl border-2 border-destructive/20 bg-destructive/5 p-6">
               <ShieldAlert className="h-7 w-7 shrink-0 text-destructive" />
               <div>
-                <p className="font-bold text-foreground">Presión de la Gran Distribución</p>
+                <p className="font-bold text-foreground">Presión de las grandes cadenas</p>
                 <p className="text-xs text-muted-foreground">
                   {'Las cadenas grandes erosionan la participación de mercado'}
                 </p>
