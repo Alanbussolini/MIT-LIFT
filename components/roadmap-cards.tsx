@@ -12,68 +12,68 @@ const cards = [
   {
     id: 'economy' as const,
     number: '01',
-    title: 'Nanostores in our economy',
-    subtitle: 'Impact, characteristics, challenges and research objectives',
+    title: 'Nanostores en nuestra economía',
+    subtitle: 'Impacto, características, desafíos y objetivos de investigación',
     icon: Globe,
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
-    tags: ['95% of LATAM businesses', '60%+ workforce', 'SME sector'],
+    tags: ['95% empresas AL', '60%+ fuerza laboral', 'Sector PYMES'],
   },
   {
     id: 'nanostore' as const,
     number: '02',
-    title: 'The Typical Nanostore Profile',
-    subtitle: 'Business type, employees, property, security infrastructure',
+    title: 'Perfil Típico del Nanostore',
+    subtitle: 'Tipo de negocio, empleados, propiedad, infraestructura de seguridad',
     icon: Store,
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
-    tags: ['79.73% Rented', '~5 Employees', 'Business Age'],
+    tags: ['79.73% Alquilado', '~5 Empleados', 'Edad del Negocio'],
   },
   {
     id: 'owner' as const,
     number: '03',
-    title: 'The Typical Nanostore Owner',
-    subtitle: 'Age, gender, education level and demographic profile',
+    title: 'Perfil Típico del Dueño',
+    subtitle: 'Edad, género, nivel educativo y perfil demográfico',
     icon: UserRound,
     color: 'text-accent',
     bgColor: 'bg-accent/10',
     borderHover: 'hover:border-accent/40',
-    tags: ['57.11% High School', '41-50 Years', 'Gender Split'],
+    tags: ['57.11% Secundaria', '41-50 Años', 'Distribución Género'],
   },
   {
     id: 'valuation' as const,
     number: '04',
-    title: 'Nanostore Valuation',
-    subtitle: 'Exit willingness, salary expectations, and AI-driven data cleaning',
+    title: 'Valuación del Nanostore',
+    subtitle: 'Disposición a vender, expectativas de salario y limpieza de datos con IA',
     icon: DollarSign,
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
-    tags: ['Gemini AI Cleaning', 'Exit Analysis', 'Salary Distribution'],
+    tags: ['Limpieza con Gemini IA', 'Análisis de Salida', 'Distribución de Salario'],
   },
   {
     id: 'credit' as const,
     number: '05',
-    title: 'Access to Credit',
-    subtitle: 'Credit impact, formal vs. informal sources, and barriers to bank financing',
+    title: 'Acceso al Crédito',
+    subtitle: 'Impacto del crédito, fuentes formales vs informales y barreras para financiamiento bancario',
     icon: Landmark,
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     borderHover: 'hover:border-primary/40',
-    tags: ['Impact Analysis', 'Formal vs Informal', 'Bank Barriers'],
+    tags: ['Análisis de Impacto', 'Formal vs Informal', 'Barreras Bancarias'],
   },
   {
     id: 'technology' as const,
     number: '06',
     title: 'Nivel de Adopción de Tecnología',
-    subtitle: 'Growth willingness, technology adoption levels, salary & sales analysis',
+    subtitle: 'Disposición a crecer, niveles de adopción tecnológica, análisis de salario y ventas',
     icon: Cpu,
     color: 'text-accent',
     bgColor: 'bg-accent/10',
     borderHover: 'hover:border-accent/40',
-    tags: ['Growth Willingness', 'Salary vs Tech', 'Sales vs Tech'],
+    tags: ['Disposición a Crecer', 'Salario vs Tech', 'Ventas vs Tech'],
   },
 ]
 
@@ -87,7 +87,7 @@ export function RoadmapCards({ onSelectCard, disabled }: RoadmapCardsProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
       >
-        Research Roadmap
+        Research Dashboard
       </motion.p>
 
       {/* Dashed vertical line behind cards */}
@@ -146,7 +146,7 @@ export function RoadmapCards({ onSelectCard, disabled }: RoadmapCardsProps) {
               {/* Disabled overlay hint */}
               {card.id !== 'economy' && disabled && (
                 <span className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/60 text-xs font-medium text-muted-foreground">
-                  {'Upload CSV to unlock'}
+                  {'Subir CSV para desbloquear'}
                 </span>
               )}
             </motion.button>

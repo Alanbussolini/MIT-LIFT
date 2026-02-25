@@ -192,15 +192,15 @@ export default function Home() {
                 transition={{ duration: 0.3 }}
               >
                 <FileSpreadsheet className="h-5 w-5 text-primary" />
-                <span className="font-medium">{'CSV loaded'}</span>
+                <span className="font-medium">{'CSV cargado'}</span>
                 <span className="text-muted-foreground">
-                  {'- '}{rows.length}{' records'}
+                  {'- '}{rows.length}{' registros'}
                 </span>
                 <button
                   onClick={() => setCsvText(null)}
                   className="ml-2 text-xs font-medium text-primary underline-offset-2 hover:underline"
                 >
-                  Change
+                  Cambiar
                 </button>
               </motion.div>
             )}
