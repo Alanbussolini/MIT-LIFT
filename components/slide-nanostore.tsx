@@ -240,21 +240,9 @@ export function SlideNanostore({
             {...fadeUp}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-card-foreground">
-                Edad del Negocio - Infraestructura de Seguridad (Rejas)
-              </h3>
-              <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#1a3a5c' }} />
-                  <span className="text-muted-foreground">Sin Reja</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded" style={{ backgroundColor: '#4ECDC4' }} />
-                  <span className="text-muted-foreground">Con Reja</span>
-                </div>
-              </div>
-            </div>
+            <h3 className="mb-4 text-sm font-bold text-card-foreground">
+              Edad del Negocio
+            </h3>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={businessAgeData} margin={{ top: 5, right: 10, left: 0, bottom: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -291,14 +279,7 @@ export function SlideNanostore({
                     style: { fontSize: 10, fill: '#ED7D31' },
                   }}
                 />
-                <Bar dataKey="withoutGate" stackId="gate" fill="#1a3a5c" name="Sin Reja" />
-                <Bar
-                  dataKey="withGate"
-                  stackId="gate"
-                  fill="#4ECDC4"
-                  name="Con Reja"
-                  radius={[3, 3, 0, 0]}
-                />
+                <Bar dataKey="withoutGate" fill="#1a3a5c" name="Cantidad" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
