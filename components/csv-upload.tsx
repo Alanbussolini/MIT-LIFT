@@ -84,6 +84,14 @@ export function CsvUpload({ onFileLoaded }: CsvUploadProps) {
                   onChange={handleInputChange}
                 />
               </label>
+              <a
+                href="https://drive.google.com/file/d/182Exqt23p4A0o-INOM-fsozXvHGFQgnU/view?usp=drive_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-primary underline-offset-2 hover:underline"
+              >
+                Archivo .csv
+              </a>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-4">
