@@ -454,6 +454,12 @@ export function computeBusinessImpactComparison(rows: SurveyRow[]): BusinessImpa
   })
 }
 
+function isYes(value: string | undefined): boolean {
+  if (!value) return false
+  const v = value.toLowerCase().trim()
+  return v === 'sí' || v === 'si' || v === 'yes' || v === 'y' || v === 's' || v.includes('sí') || v.includes('si')
+}
+
 export function computeCreditSources(rows: SurveyRow[]): CreditSourceData[] {
   const sources: { key: keyof SurveyRow; label: string }[] = [
     { key: 'creditBank', label: 'Bancos' },
@@ -466,10 +472,7 @@ export function computeCreditSources(rows: SurveyRow[]): CreditSourceData[] {
   return sources
     .map(({ key, label }) => ({
       source: label,
-      count: rows.filter(r => {
-        const val = (r[key] as string)?.toLowerCase().trim()
-        return val === 'sí' || val === 'si' || val === 'yes' || val === 'y' || val === 'true'
-      }).length,
+      count: rows.filter(r => isYes(r[key] as string)).length,
     }))
     .sort((a, b) => b.count - a.count)
 }
@@ -485,13 +488,8 @@ export function computeFormalInformalCredit(rows: SurveyRow[]): {
   let informal = 0
 
   rows.forEach(row => {
-    const hasFormal = 
-      row.creditBank === 'Sí' || row.creditBank === 'Si' ||
-      row.creditPrivate === 'Sí' || row.creditPrivate === 'Si' ||
-      row.creditGovernment === 'Sí' || row.creditGovernment === 'Si'
-    const hasInformal = 
-      row.creditProviders === 'Sí' || row.creditProviders === 'Si' ||
-      row.creditFamily === 'Sí' || row.creditFamily === 'Si'
+    const hasFormal = isYes(row.creditBank) || isYes(row.creditPrivate) || isYes(row.creditGovernment)
+    const hasInformal = isYes(row.creditProviders) || isYes(row.creditFamily)
     if (hasFormal) formal++
     if (hasInformal) informal++
   })
