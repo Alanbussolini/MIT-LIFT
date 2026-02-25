@@ -333,6 +333,33 @@ export function computeBusinessAgeData(rows: SurveyRow[]): BusinessAgeData[] {
   return result
 }
 
+export interface HasGateData {
+  yes: number
+  no: number
+  yesPct: number
+  noPct: number
+  chartData: { name: string; value: number }[]
+}
+
+export function computeHasGate(rows: SurveyRow[]): HasGateData {
+  const yes = rows.filter(r => isYes(r.hasGate)).length
+  const no = rows.filter(r => !isYes(r.hasGate) && (r.hasGate === 'No' || r.hasGate === 'no' || r.hasGate === '')).length
+  const total = yes + no
+  const yesPct = total > 0 ? parseFloat(((yes / total) * 100).toFixed(1)) : 0
+  const noPct = total > 0 ? parseFloat(((no / total) * 100).toFixed(1)) : 0
+  
+  return {
+    yes,
+    no,
+    yesPct,
+    noPct,
+    chartData: [
+      { name: 'Con reja', value: yes },
+      { name: 'Sin reja', value: no },
+    ],
+  }
+}
+
 export function computeBusinessTypeRental(rows: SurveyRow[]): BusinessTypeRentalData[] {
   const counts: Record<string, { propio: number; rentado: number }> = {}
   

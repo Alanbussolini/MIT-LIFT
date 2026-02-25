@@ -35,6 +35,7 @@ import {
   computeMostFrequentBusinessType,
   computeAMBAgeoPoints,
   computeBuenosAiresMapPoints,
+  computeHasGate,
 } from '@/lib/csv-parser'
 import type { SurveyRow } from '@/lib/csv-parser'
 import { FileSpreadsheet } from 'lucide-react'
@@ -69,6 +70,7 @@ export default function Home() {
   const mostFrequentBusinessType = computeMostFrequentBusinessType(rows)
   const geoPoints = computeAMBAgeoPoints(rows)
   const baGeoPoints = computeBuenosAiresMapPoints(rows)
+  const hasGateData = computeHasGate(rows)
 
   const goBack = () => setActiveView(null)
 
@@ -99,6 +101,7 @@ export default function Home() {
             averageEmployees={averageEmployees}
             averageBusinessAge={averageBusinessAge}
             mostFrequentBusinessType={mostFrequentBusinessType}
+            hasGateData={hasGateData}
             onBack={goBack}
           />
         </motion.div>

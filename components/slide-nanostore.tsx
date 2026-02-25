@@ -13,12 +13,16 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts'
 import type {
   EmployeeCountData,
   BusinessAgeData,
   BusinessTypeRentalData,
   MostFrequentBusinessType,
+  HasGateData,
 } from '@/lib/csv-parser'
 
 interface SlideNanostoreProps {
@@ -28,6 +32,7 @@ interface SlideNanostoreProps {
   averageEmployees: number
   averageBusinessAge: number
   mostFrequentBusinessType: MostFrequentBusinessType | null
+  hasGateData: HasGateData
   onBack: () => void
 }
 
@@ -35,6 +40,8 @@ const fadeUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
 }
+
+const DONUT_COLORS = ['#1a3a5c', '#ED7D31']
 
 function fixEncoding(str: string): string {
   if (!str) return ''
@@ -60,6 +67,7 @@ export function SlideNanostore({
   averageEmployees,
   averageBusinessAge,
   mostFrequentBusinessType,
+  hasGateData,
   onBack,
 }: SlideNanostoreProps) {
   const totalBusinesses = businessTypeData.reduce((sum, d) => sum + d.propio + d.rentado, 0)
@@ -136,6 +144,46 @@ export function SlideNanostore({
               </span>
             </div>
           )}
+          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-accent/30 bg-card p-4 shadow-sm">
+            <span className="text-3xl font-black tracking-tight text-accent sm:text-4xl">
+              {hasGateData.yesPct}%
+            </span>
+            <span className="mt-1 text-center text-xs font-medium text-muted-foreground">
+              tiene reja
+            </span>
+            <ResponsiveContainer width="100%" height={100}>
+              <PieChart>
+                <Pie
+                  data={hasGateData.chartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={25}
+                  outerRadius={40}
+                  paddingAngle={2}
+                  dataKey="value"
+                  nameKey="name"
+                  stroke="none"
+                >
+                  {hasGateData.chartData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ fontSize: 11, borderRadius: 6, border: '1px solid #e5e7eb' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="flex gap-4 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded" style={{ backgroundColor: '#1a3a5c' }} />
+                <span>Con reja: {hasGateData.yesPct}%</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded" style={{ backgroundColor: '#ED7D31' }} />
+                <span>Sin reja: {hasGateData.noPct}%</span>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_auto]">
